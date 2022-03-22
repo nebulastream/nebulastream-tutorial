@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'stream.nebula'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'stream.nebula:nebulastream-java-client:0.0.41'
+}
+
+apply plugin:'application'
+mainClassName = 'NebulaStreamTutorial'

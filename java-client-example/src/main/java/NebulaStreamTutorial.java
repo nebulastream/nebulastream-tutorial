@@ -1,0 +1,32 @@
+import stream.nebula.exceptions.EmptyFieldException;
+import stream.nebula.exceptions.RESTExecption;
+import stream.nebula.operators.Aggregation;
+import stream.nebula.operators.EventTime;
+import stream.nebula.operators.TimeMeasure;
+import stream.nebula.operators.sink.FileSink;
+import stream.nebula.operators.windowdefinition.TumblingWindow;
+import stream.nebula.queryinterface.Query;
+import stream.nebula.runtime.NebulaStreamRuntime;
+
+import java.io.IOException;
+
+public class NebulaStreamTutorial {
+
+    public static void main(String[] args) throws EmptyFieldException, RESTExecption, IOException {
+        // Create a NebulaStream runtime and connect it to the NebulaStream coordinator.
+        NebulaStreamRuntime nebulaStreamRuntime = NebulaStreamRuntime.getRuntime();
+        nebulaStreamRuntime.getConfig().setHost("localhost").setPort("8081");
+
+        // Create a streaming query
+        Query query = new Query()
+            .from("wind_turbines")
+            .windowByKey("metadata_id",
+                    TumblingWindow.of(new EventTime("features_properties_updated"), TimeMeasure.minutes(10)),
+                    Aggregation.sum("features_properties_mag"))
+            .sink(new FileSink("/tutorial/java-query-results.csv", "CSV_FORMAT", "OVERRIDE"));
+
+        // Submit the query to the coordinator.
+        int queryId = nebulaStreamRuntime.executeQuery(query.generateCppCode(), "BottomUp");
+    }
+
+}
