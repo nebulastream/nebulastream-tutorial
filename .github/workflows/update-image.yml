@@ -3,13 +3,13 @@ name: NebulaStream Demo Image CI
 on:
   push:
     branches:
-      - '1-add-ci'
+      - 'master'
     tags:
       - 'v*'
 jobs:
   release-demo-docker:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/1-add-ci'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
