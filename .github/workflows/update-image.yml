@@ -7,7 +7,7 @@ on:
     tags:
       - 'v*'
 jobs:
-  release-docker:
+  release-demo-docker:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/1-add-ci'
     steps:
@@ -25,7 +25,7 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/v}
           fi
           TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${SHORTREF}"
-          
+
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
       - name: Set up QEMU
