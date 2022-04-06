@@ -8,7 +8,7 @@ logLevel: LOG_ERROR
 ###
 ### Network configuration
 ###
-localWorkerIp: 172.31.0.3
+localWorkerIp: 172.31.0.4
 coordinatorIp: coordinator
 
 queryCompiler:
@@ -19,7 +19,7 @@ queryCompiler:
 ###
 physicalSources:
         - logicalSourceName: test_source
-          physicalSourceName: test_source_1
+          physicalSourceName: test_source_2
           type: CSVSource
           configuration:
                   filePath: /test-data/test-data-1.csv

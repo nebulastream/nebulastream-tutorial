@@ -1,7 +1,7 @@
 # File indicating that docker containers are running
 DOCKER_STAMP=docker.stamp
 CONFIG_FILES=coordinator.yml worker-1.yml
-TEST_FILES=test-data.csv test-query.json
+TEST_FILES=test-data-1.csv test-data-2.csv test-query.json
 OUTPUT_FILES=actual-output.csv
 
 up: ${DOCKER_STAMP}

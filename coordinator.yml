@@ -20,9 +20,5 @@ logicalSources:
     fields:
       - name: timestamp
         type: UINT64
-      - name: group1
+      - name: value
         type: UINT8
-      - name: group2
-        type: UINT8
-      - name: value1
-        type: FLOAT32
