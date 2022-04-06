@@ -1,4 +1,4 @@
 {
-  "userQuery": "Query::from(\"test_source\").window(TumblingWindow::of(EventTime(Attribute(\"timestamp\")), Seconds(2))).apply(Sum(Attribute(\"value\"))).sink(FileSinkDescriptor::create(\"/test-data/actual-output.csv\", \"CSV_FORMAT\", \"APPEND\"));",
+  "userQuery": "Query::from(\"test_source\").window(TumblingWindow::of(EventTime(Attribute(\"timestamp\")), Seconds(2))).byKey(Attribute(\"group\")).apply(Sum(Attribute(\"value\"))).sink(FileSinkDescriptor::create(\"/test-data/actual-output.csv\", \"CSV_FORMAT\", \"APPEND\"));",
   "strategyName": "BottomUp"
 }

@@ -20,5 +20,8 @@ logicalSources:
     fields:
       - name: timestamp
         type: UINT64
+      - name: group
+        type: CHAR
+        length: 1
       - name: value
         type: UINT8
