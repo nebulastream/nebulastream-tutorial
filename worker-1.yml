@@ -15,11 +15,11 @@ coordinatorIp: coordinator
 ### Physical source configuration
 ###
 physicalSources:
-        - logicalSourceName: wind_turbines
-          physicalSourceName: wind_turbine_1
+        - logicalSourceName: test_source
+          physicalSourceName: test_source_1
           type: CSVSource
           configuration:
-                  filePath: /tutorial/wind-turbine-1.csv
+                  filePath: /test-data/test-data.csv
                   numberOfBuffersToProduce: 1024
                   numberOfTuplesToProducePerBuffer: 0
                   skipHeader: true

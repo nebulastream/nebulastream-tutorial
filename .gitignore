@@ -2,3 +2,5 @@
 /output/
 /java-query-results.csv
 /.idea/
+/docker.stamp
+/actual-output.csv
