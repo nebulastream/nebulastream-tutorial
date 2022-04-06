@@ -1,5 +1,3 @@
-test_stream$start:INTEGER,test_stream$end:INTEGER,test_stream$group1:INTEGER,test_stream$group2:INTEGER,test_stream$value1:(Float)
-1647385260000,1647385262000,1,1,26.000000
-1647385260000,1647385262000,1,2,16.000000
-1647385262000,1647385264000,1,1,38.000000
-1647385262000,1647385264000,1,2,22.000000
+test_source$start:INTEGER,test_source$end:INTEGER,test_source$test_source$test_source$test_source$sum:(Float),test_source$test_source$test_source$test_source$min:(Float)
+1647385260000,1647385262000,3.000000,1.000000
+1647385262000,1647385264000,7.000000,3.000000
