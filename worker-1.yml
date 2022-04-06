@@ -11,6 +11,9 @@ logLevel: LOG_ERROR
 localWorkerIp: 172.31.0.3
 coordinatorIp: coordinator
 
+queryCompiler:
+  windowingStrategy: THREAD_LOCAL
+
 ###
 ### Physical source configuration
 ###
