@@ -22,7 +22,7 @@ physicalSources:
           physicalSourceName: test_source_2
           type: CSVSource
           configuration:
-                  filePath: /test-data/test-data-1.csv
+                  filePath: /test-data/test-data-2.csv
                   numberOfBuffersToProduce: 1024
                   numberOfTuplesToProducePerBuffer: 0
                   skipHeader: true

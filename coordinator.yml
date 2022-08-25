@@ -13,6 +13,13 @@ coordinatorIp: 172.31.0.2
 restPort: 8081
 
 ###
+### Workaround
+###
+#optimizer:
+#  distributedWindowChildThreshold: 100
+#  distributedWindowCombinerThreshold: 100
+
+###
 ### Logical source configuration
 ###
 logicalSources:
@@ -21,4 +28,4 @@ logicalSources:
       - name: timestamp
         type: UINT64
       - name: value
-        type: UINT8
+        type: FLOAT32
