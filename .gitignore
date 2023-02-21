@@ -1,4 +1,4 @@
 /rest-query-result.csv
-/output/
+/output/*.csv
 /java-query-results.csv
 /.idea/

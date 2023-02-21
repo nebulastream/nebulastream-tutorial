@@ -58,3 +58,17 @@ logicalSources:
                     type: CHAR
                     length: 50
 
+        - logicalSourceName: "iris"
+          fields:
+            - name: "id"
+              type: "UINT64"
+            - name: "f1"
+              type: "FLOAT32"
+            - name: "f2"
+              type: "FLOAT32"
+            - name: "f3"
+              type: "FLOAT32"
+            - name: "f4"
+              type: "FLOAT32"
+            - name: "target"
+              type: "UINT64"
