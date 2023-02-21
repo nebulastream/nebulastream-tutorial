@@ -23,3 +23,11 @@ physicalSources:
                   numberOfBuffersToProduce: 1024
                   numberOfTuplesToProducePerBuffer: 0
                   skipHeader: true
+        - logicalSourceName: "iris"
+          physicalSourceName: "iris_1"
+          type: "CSVSource"
+          configuration:
+            filePath: /tutorial/resources/iris_short.csv
+            numberOfBuffersToProduce: 10
+            numberOfTuplesToProducePerBuffer: 0
+            skipHeader: false
