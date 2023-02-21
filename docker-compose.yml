@@ -30,7 +30,7 @@ services:
   ui:
     image: nebulastream/nes-ui-image:latest
     ports:
-      - 3000:3000
+      - 9000:9000
     networks:
       nebulastream-network:
         ipv4_address: 172.31.0.12
