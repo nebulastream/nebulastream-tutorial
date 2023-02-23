@@ -17,9 +17,6 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
 
 /**
  * Example demonstrating the {@code inferModel} operation.
- * It then maps the attributes {@code f1}, {@code f2}, {@code f3}, and {@code f4} as inputs for the TensorFlow model.
- * The model computes three output fields which are stored as the attributes {@code iris0}, {@code iris1}, and {@code
- * iris2} in the output tuple.
  */
 public class InferModelExample {
 
