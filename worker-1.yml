@@ -31,3 +31,6 @@ physicalSources:
             numberOfBuffersToProduce: 10
             numberOfTuplesToProducePerBuffer: 0
             skipHeader: false
+
+queryCompiler:
+  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
