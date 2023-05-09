@@ -17,17 +17,13 @@ coordinatorIp: coordinator
 physicalSources:
         - logicalSourceName: wind_turbines
           physicalSourceName: wind_turbine_1
-          type: CSVSource
+          type: CSV_SOURCE
           configuration:
                   filePath: /tutorial/wind-turbine-1.csv
-                  numberOfBuffersToProduce: 1024
-                  numberOfTuplesToProducePerBuffer: 0
                   skipHeader: true
         - logicalSourceName: "iris"
           physicalSourceName: "iris_1"
-          type: "CSVSource"
+          type: CSV_SOURCE
           configuration:
             filePath: /tutorial/resources/iris_short.csv
-            numberOfBuffersToProduce: 10
-            numberOfTuplesToProducePerBuffer: 0
             skipHeader: false
