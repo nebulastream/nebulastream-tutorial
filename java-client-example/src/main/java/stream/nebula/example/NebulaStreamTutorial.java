@@ -1,3 +1,5 @@
+package stream.nebula.example;
+
 import stream.nebula.exceptions.RESTException;
 import stream.nebula.operators.Aggregation;
 import stream.nebula.operators.sinks.FileSink;

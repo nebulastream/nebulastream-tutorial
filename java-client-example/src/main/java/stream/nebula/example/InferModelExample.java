@@ -1,19 +1,16 @@
+package stream.nebula.example;
+
 import stream.nebula.exceptions.RESTException;
 import stream.nebula.expression.BasicType;
-import stream.nebula.operators.Aggregation;
 import stream.nebula.operators.sinks.FileSink;
 import stream.nebula.operators.sinks.Sink;
-import stream.nebula.operators.window.TumblingWindow;
 import stream.nebula.runtime.NebulaStreamRuntime;
 import stream.nebula.runtime.Query;
-import stream.nebula.serialization.cpp.CppQueryRequestSerializer;
 
 import java.io.IOException;
 import java.util.Objects;
 
 import static stream.nebula.expression.Expressions.attribute;
-import static stream.nebula.operators.window.EventTime.eventTime;
-import static stream.nebula.operators.window.TimeMeasure.minutes;
 
 /**
  * Example demonstrating the {@code inferModel} operation.
