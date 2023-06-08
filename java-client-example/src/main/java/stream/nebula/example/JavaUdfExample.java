@@ -12,40 +12,58 @@ import stream.nebula.udf.MapFunction;
 
 import java.io.IOException;
 
+import static stream.nebula.expression.Expressions.attribute;
 import static stream.nebula.operators.window.EventTime.eventTime;
 import static stream.nebula.operators.window.TimeMeasure.minutes;
 
+/**
+ * Example demonstrating the execution of a Java UDF.
+ */
 public class JavaUdfExample {
 
-    static class Point {
-        long x;
-        long y;
+    // This is the input type of the UDF.
+    // The names of the fields `x` and `y` must correspond to the schema of the input stream.
+    static class CartesianCoordinate {
+        double x;
+        double y;
     }
 
-    static class MyMapFunction implements MapFunction<Point, Point> {
-        public Point map(final Point value) {
-            Point output =  new Point();
-            output.x = 2 * value.x;
-            output.y = 2 * value.y;
+    // This is he output type of the UDF.
+    // The schema of the output stream is derived from the names of the fields `angle` and `radius`.
+    static class PolarCoordinate {
+        double angle;
+        double radius;
+    }
+
+    // This UDF converts cartesian coordinates to polar coordinates.
+    static class CartesianToPolar implements MapFunction<CartesianCoordinate, PolarCoordinate> {
+        public PolarCoordinate map(final CartesianCoordinate value) {
+            PolarCoordinate output =  new PolarCoordinate();
+            output.radius = Math.sqrt(value.x * value.x + value.y * value.y);
+            output.angle = Math.atan2(value.x, value.y);
             return output;
         }
     }
-
     public static void main(String[] args) throws RESTException, IOException {
         // Create a NebulaStream runtime and connect it to the NebulaStream coordinator.
         NebulaStreamRuntime nebulaStreamRuntime = NebulaStreamRuntime.getRuntime();
         nebulaStreamRuntime.getConfig().setHost("localhost").setPort("8081");
 
-        // Create a streaming query
-        Query query = nebulaStreamRuntime
-                .readFromSource("points")
-                .map(new MyMapFunction());
+        // Create a streaming query. The `points` source contains two attributes `x` and `y`.
+        Query query = nebulaStreamRuntime.readFromSource("points");
+
+        // Project the input attributes for the UDF. This operation is not strictly necessary in this example,
+        // because the input stream only contains the two attributes.
+        query.project(attribute("x"), attribute("y"));
+
+        // Execute the UDF on the stream.
+        query.map(new CartesianToPolar());
 
         // Finish the query with a sink
         Sink sink = query.sink(new FileSink("/tutorial/output/java-udf-results.csv", "CSV_FORMAT", true));
 
         // Submit the query to the coordinator.
-        int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
+        nebulaStreamRuntime.executeQuery(query, "BottomUp");
     }
 
 }
