@@ -21,9 +21,9 @@ logicalSources:
         - logicalSourceName: "points"
           fields:
             - name: "x"
-              type: "INT64"
+              type: "FLOAT64"
             - name: "y"
-              type: "INT64"
+              type: "FLOAT64"
         - logicalSourceName: "wind_turbines"
           fields:
                   - name: type
