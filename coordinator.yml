@@ -18,6 +18,12 @@ restPort: 8081
 ### Logical source configuration
 ###
 logicalSources:
+        - logicalSourceName: "points"
+          fields:
+            - name: "x"
+              type: "FLOAT64"
+            - name: "y"
+              type: "FLOAT64"
         - logicalSourceName: "wind_turbines"
           fields:
                   - name: type
