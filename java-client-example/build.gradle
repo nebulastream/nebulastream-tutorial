@@ -7,10 +7,11 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    implementation 'stream.nebula:nebulastream-java-client:0.0.74'
+    implementation 'stream.nebula:nebulastream-java-client:0.0.80'
 }
 
 apply plugin:'application'

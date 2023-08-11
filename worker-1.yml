@@ -20,6 +20,12 @@ queryCompiler:
 ### Physical source configuration
 ###
 physicalSources:
+        - logicalSourceName: "ages"
+          physicalSourceName: "ages_1"
+          type: "CSV_SOURCE"
+          configuration:
+            filePath: "/tutorial/resources/ages.csv"
+            skipHeader: true
         - logicalSourceName: "points"
           physicalSourceName: "points_1"
           type: "CSV_SOURCE"
@@ -38,3 +44,5 @@ physicalSources:
           configuration:
             filePath: /tutorial/resources/iris_short.csv
             skipHeader: false
+
+workerId: 2

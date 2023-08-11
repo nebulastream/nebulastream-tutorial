@@ -7,6 +7,10 @@ logLevel: LOG_ERROR
 optimizer:
         distributedWindowChildThreshold: 3
 
+worker:
+  queryCompiler:
+    queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+
 ###
 ### Network configuration
 ###
@@ -18,6 +22,12 @@ restPort: 8081
 ### Logical source configuration
 ###
 logicalSources:
+        - logicalSourceName: "ages"
+          fields:
+            - name: "timestamp"
+              type: "TEXT"
+            - name: "age"
+              type: "INT32"
         - logicalSourceName: "points"
           fields:
             - name: "x"
