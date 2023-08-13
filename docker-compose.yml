@@ -8,7 +8,7 @@ services:
     volumes:
       - ./:/tutorial
     networks:
-      nebulastream-network:
+      elegant-use-case-example-network:
         ipv4_address: 172.31.0.2
   worker:
     image: nebulastream/nes-executable-image:latest
@@ -16,26 +16,49 @@ services:
     volumes:
       - ./:/tutorial
     networks:
-      nebulastream-network:
+      elegant-use-case-example-network:
         ipv4_address: 172.31.0.3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  accelerationService:
+    image: elegant-acceleration-service-container
+    ports:
+      - 8080:8080
+    volumes:
+      - ./configuration/acceleration_service:/root/Elegant-Acceleration-Service/service_db
+    networks:
+      elegant-use-case-example-network:
+        - ipv4_address: 172.31.0.4
+  plannerService:
+    image: ckleitsikas/elegant_planner:latest
+    ports:
+      - 5000:8081
+    networks:
+      elegant-use-case-example-network:
+        - ipv4_address: 172.31.0.5
   mosquitto:
     image: eclipse-mosquitto
     ports:
       - 9001:9001
     volumes:
-      - ./mosquitto/config:/mosquitto/config
+      - ./configuration/mosquitto/config:/mosquitto/config
     networks:
-      nebulastream-network:
+      elegant-use-case-example-network:
         ipv4_address: 172.31.0.11
   ui:
     image: nebulastream/nes-ui-image:latest
     ports:
       - 9000:9000
     networks:
-      nebulastream-network:
+      elegant-use-case-example-network:
         ipv4_address: 172.31.0.12
 networks:
-  nebulastream-network:
+  elegant-use-case-example-network:
     ipam:
       config:
         - subnet: 172.31.0.0/24

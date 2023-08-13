@@ -1,40 +1,16 @@
-###
-### General configuration
-###
+# Network setup
+localWorkerIp: "172.31.0.3"
+coordinatorIp: "coordinator"
 
-logLevel: LOG_ERROR
-#logLevel: LOG_WARNING
-#logLevel: LOG_INFO
-#logLevel: LOG_DEBUG
-
-###
-### Network configuration
-###
-localWorkerIp: 172.31.0.3
-coordinatorIp: coordinator
-
+# Query compiler configuration
 queryCompiler:
   queryCompilerType: "NAUTILUS_QUERY_COMPILER"
 
-###
-### Physical source configuration
-###
+# Physical source setup
 physicalSources:
-        - logicalSourceName: "points"
-          physicalSourceName: "points_1"
-          type: "CSV_SOURCE"
-          configuration:
-            filePath: "/tutorial/resources/points.csv"
-            skipHeader: true
-        - logicalSourceName: wind_turbines
-          physicalSourceName: wind_turbine_1
-          type: CSV_SOURCE
-          configuration:
-                  filePath: /tutorial/wind-turbine-1.csv
-                  skipHeader: true
-        - logicalSourceName: "iris"
-          physicalSourceName: "iris_1"
-          type: CSV_SOURCE
-          configuration:
-            filePath: /tutorial/resources/iris_short.csv
-            skipHeader: false
+  - logicalSourceName: "cartesian-points"
+    physicalSourceName: "cartesian-points-1"
+    type: "CSV_SOURCE"
+    configuration:
+      filePath: "/tutorial/resources/cartesian-points.csv"
+      skipHeader: true
