@@ -5,7 +5,7 @@ restPort: "8081"
 
 # Source configuration
 logicalSources:
-  - logicalSourceName: "points"
+  - logicalSourceName: "cartesian-points"
     fields:
       - name: "x"
         type: "FLOAT64"
