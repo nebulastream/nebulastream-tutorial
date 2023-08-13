@@ -41,22 +41,6 @@ services:
     networks:
       elegant-use-case-example-network:
         - ipv4_address: 172.31.0.5
-  mosquitto:
-    image: eclipse-mosquitto
-    ports:
-      - 9001:9001
-    volumes:
-      - ./configuration/mosquitto/config:/mosquitto/config
-    networks:
-      elegant-use-case-example-network:
-        ipv4_address: 172.31.0.11
-  ui:
-    image: nebulastream/nes-ui-image:latest
-    ports:
-      - 9000:9000
-    networks:
-      elegant-use-case-example-network:
-        ipv4_address: 172.31.0.12
 networks:
   elegant-use-case-example-network:
     ipam:
