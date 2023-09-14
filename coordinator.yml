@@ -1,23 +1,39 @@
 ###
 ### General configuration
 ###
-logLevel: LOG_ERROR
+#logLevel: LOG_ERROR
 #logLevel: LOG_WARNING
-#logLevel: LOG_DEBUG
+logLevel: LOG_DEBUG
 optimizer:
         distributedWindowChildThreshold: 3
 
 ###
 ### Network configuration
 ###
-restIp: 172.31.0.2
-coordinatorIp: 172.31.0.2
+restIp: 127.0.0.1
+coordinatorIp: 127.0.0.1
 restPort: 8081
 
 ###
 ### Logical source configuration
 ###
 logicalSources:
+        - logicalSourceName: test1
+                fields:
+                        - name: "value1"
+                          type: "UINT64"
+                        - name: "id1"
+                          type: "UINT64"
+                        - name: "timestamp"
+                          type: "UINT64"
+        - logicalSourceName: test2
+                fields:
+                        - name: "value2"
+                          type: "UINT64"
+                        - name: "id2"
+                          type: "UINT64"
+                        - name: "timestamp"
+                          type: "UINT64"
         - logicalSourceName: "points"
           fields:
             - name: "x"

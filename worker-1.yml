@@ -2,39 +2,55 @@
 ### General configuration
 ###
 
-logLevel: LOG_ERROR
+#logLevel: LOG_ERROR
 #logLevel: LOG_WARNING
 #logLevel: LOG_INFO
-#logLevel: LOG_DEBUG
+logLevel: LOG_DEBUG
 
 ###
 ### Network configuration
 ###
-localWorkerIp: 172.31.0.3
-coordinatorIp: coordinator
+localWorkerIp: 0.0.0.0
+coordinatorIp: 127.0.0.1
 
 queryCompiler:
-  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+	queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+	windowingStrategy: "SLICING"
 
 ###
 ### Physical source configuration
 ###
 physicalSources:
-        - logicalSourceName: "points"
-          physicalSourceName: "points_1"
-          type: "CSV_SOURCE"
-          configuration:
-            filePath: "/tutorial/resources/points.csv"
-            skipHeader: true
-        - logicalSourceName: wind_turbines
-          physicalSourceName: wind_turbine_1
-          type: CSV_SOURCE
-          configuration:
-                  filePath: /tutorial/wind-turbine-1.csv
-                  skipHeader: true
-        - logicalSourceName: "iris"
-          physicalSourceName: "iris_1"
-          type: CSV_SOURCE
-          configuration:
-            filePath: /tutorial/resources/iris_short.csv
-            skipHeader: false
+	- logicalSourceName: "test1"
+					physicalSourceName: "test1_1"
+					type: CSV_SOURCE
+					configuration:
+						filePath: window.csv
+						skipHeader: false
+	- logicalSourceName: "test2"
+					physicalSourceName: "test2_1"
+					type: CSV_SOURCE
+					configuration:
+						filePath: window2.csv
+						skipHeader: false
+						
+				- logicalSourceName: "points"
+					physicalSourceName: "points_1"
+					type: "CSV_SOURCE"
+					configuration:
+						filePath: "resources/points.csv"
+						skipHeader: true
+				- logicalSourceName: wind_turbines
+					physicalSourceName: wind_turbine_1
+					type: CSV_SOURCE
+					configuration:
+									filePath: wind-turbine-1.csv
+									skipHeader: true
+				- logicalSourceName: "iris"
+					physicalSourceName: "iris_1"
+					type: CSV_SOURCE
+					configuration:
+						filePath: resources/iris_short.csv
+						skipHeader: false
+
+workerId: 2
