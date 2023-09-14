@@ -1,4 +1,4 @@
 {
-  "userQuery": "Query::from(\"iris\").joinWith(Query::from(\"points\")).where(Attribute(\"id\")).equalsTo(Attribute(\"x\")).window(TumblingWindow::of(IngestionTime(), Milliseconds(1000))).sink(FileSinkDescriptor::create(\"rest-query-result.csv\", \"CSV_FORMAT\", \"APPEND\"));",
+  "userQuery": "Query::from(\"test4\").joinWith(Query::from(\"test5\")).where(Attribute(\"id2\") == Attribute(\"id5\")).window(SlidingWindow::of(EventTime(Attribute(\"timestamp\")), Milliseconds(1000), Milliseconds(500))).sink(FileSinkDescriptor::create(\"result.csv\", \"CSV_FORMAT\", \"APPEND\"));",
   "placement": "BottomUp"
 }

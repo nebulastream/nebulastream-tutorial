@@ -10,47 +10,78 @@ logLevel: LOG_DEBUG
 ###
 ### Network configuration
 ###
-localWorkerIp: 0.0.0.0
+localWorkerIp: 127.0.0.1
 coordinatorIp: 127.0.0.1
 
 queryCompiler:
-	queryCompilerType: "NAUTILUS_QUERY_COMPILER"
-	windowingStrategy: "SLICING"
+  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+  windowingStrategy: "SLICING"
 
 ###
 ### Physical source configuration
 ###
 physicalSources:
-	- logicalSourceName: "test1"
-					physicalSourceName: "test1_1"
-					type: CSV_SOURCE
-					configuration:
-						filePath: window.csv
-						skipHeader: false
-	- logicalSourceName: "test2"
-					physicalSourceName: "test2_1"
-					type: CSV_SOURCE
-					configuration:
-						filePath: window2.csv
-						skipHeader: false
-						
-				- logicalSourceName: "points"
-					physicalSourceName: "points_1"
-					type: "CSV_SOURCE"
-					configuration:
-						filePath: "resources/points.csv"
-						skipHeader: true
-				- logicalSourceName: wind_turbines
-					physicalSourceName: wind_turbine_1
-					type: CSV_SOURCE
-					configuration:
-									filePath: wind-turbine-1.csv
-									skipHeader: true
-				- logicalSourceName: "iris"
-					physicalSourceName: "iris_1"
-					type: CSV_SOURCE
-					configuration:
-						filePath: resources/iris_short.csv
-						skipHeader: false
+        - logicalSourceName: "points"
+          physicalSourceName: "points_1"
+          type: "CSV_SOURCE"
+          configuration:
+            filePath: "resources/points.csv"
+            skipHeader: true
+        - logicalSourceName: wind_turbines
+          physicalSourceName: wind_turbine_1
+          type: CSV_SOURCE
+          configuration:
+                  filePath: wind-turbine-1.csv
+                  skipHeader: true
+        - logicalSourceName: "iris"
+          physicalSourceName: "iris_1"
+          type: CSV_SOURCE
+          configuration:
+            filePath: resources/iris_short.csv
+            skipHeader: false
+        - logicalSourceName: "test1"
+          physicalSourceName: "test1_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window.csv
+                skipHeader: false
 
-workerId: 2
+        - logicalSourceName: "test2"
+          physicalSourceName: "test2_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window2.csv
+                skipHeader: false
+
+        - logicalSourceName: "test3"
+          physicalSourceName: "test3_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window3.csv
+                skipHeader: false
+
+        - logicalSourceName: "test4"
+          physicalSourceName: "test4_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window4.csv
+                skipHeader: false
+
+        - logicalSourceName: "test5"
+          physicalSourceName: "test5_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window5.csv
+                skipHeader: false
+        - logicalSourceName: "test6"
+          physicalSourceName: "test6_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window6.csv
+                skipHeader: false
+        - logicalSourceName: "test7"
+          physicalSourceName: "test7_1"
+          type: CSV_SOURCE
+          configuration:
+                filePath: resources/window7.csv
+                skipHeader: false

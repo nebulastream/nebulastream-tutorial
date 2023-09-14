@@ -1,0 +1,4 @@
+{
+  "userQuery": "Query::from(\"test1\").joinWith(Query::from(\"test2\")).where(Attribute(\"id1\")).equalsTo(Attribute(\"id2\")).window(SlidingWindow::of(IngestionTime(), Milliseconds(1000), Milliseconds(500))).sink(FileSinkDescriptor::create(\"result.csv\", \"CSV_FORMAT\", \"APPEND\"));",
+  "placement": "BottomUp"
+}
