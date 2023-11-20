@@ -1,0 +1,166 @@
+* Try out hierarchical topology                                                        :@comp:FOCUS:
+
+- [ ] Problem: Execution plan does not seem to involve intermediate worker 2 with IP address 172.31.0.3.
+
+[2023-11-20 Mo]
+
+Topology after startup:
+
+#+begin_src json
+{
+  "edges": [
+    {
+      "source": 2,
+      "target": 1
+    },
+    {
+      "source": 3,
+      "target": 1    # parent node of 3 is 1 (internal worker of coordinator)
+    }
+  ],
+  "nodes": [
+    {
+      "available_resources": 65533,
+      "id": 1,
+      "ip_address": "172.31.0.2",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    },
+    {
+      "available_resources": 65535,
+      "id": 2,
+      "ip_address": "172.31.0.3",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    },
+    {
+      "available_resources": 65529,
+      "id": 3,
+      "ip_address": "172.31.0.4",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    }
+  ]
+}
+#+end_src
+
+Rewire topology:
+
+#+begin_src sh
+curl -d '{"parentId": 2, "childId": 3}' http://localhost:8081/v1/nes/topology/addParent
+curl -X DELETE -d '{"parentId": 1, "childId": 3}' http://localhost:8081/v1/nes/topology/removeParent
+#+end_src
+
+Both commands should print:
+
+#+begin_src json
+{"success":true}
+#+end_src
+
+Topology after rewiring:
+
+#+begin_src json
+{
+  "edges": [
+    {
+      "source": 2,
+      "target": 1
+    },
+    {
+      "source": 3,
+      "target": 2    # parent node of 3 is 2
+    }
+  ],
+  "nodes": [
+    {
+      "available_resources": 65533,
+      "id": 1,
+      "ip_address": "172.31.0.2",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    },
+    {
+      "available_resources": 65535,
+      "id": 2,
+      "ip_address": "172.31.0.3",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    },
+    {
+      "available_resources": 65529,
+      "id": 3,
+      "ip_address": "172.31.0.4",
+      "location": null,
+      "nodeType": "NO_LOCATION"
+    }
+  ]
+}
+#+end_src
+
+Executing a query, e.g., JavaUdfExample with BottomUp placement:
+
+#+begin_example
+[20:01:57.315918] [I] [thread 12] [BasePlacementStrategy.cpp:356] [addNetworkSourceAndSinkOperators] ExecutionNode(id:1, ip:172.31.0.2, topologyId:1)
+| QuerySubPlan(queryId:1, querySubPlanId:3)
+|  SINK(5: {FileSinkDescriptor()})
+|  |--SOURCE(12,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 1::12::0::0})
+| QuerySubPlan(queryId:2, querySubPlanId:6)
+|  SINK(22: {FileSinkDescriptor()})
+|  |--SOURCE(29,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 2::29::0::0})
+| QuerySubPlan(queryId:3, querySubPlanId:9)
+|  SINK(39: {FileSinkDescriptor()})
+|--ExecutionNode(id:3, ip:172.31.0.4, topologyId:3)
+|  | QuerySubPlan(queryId:1, querySubPlanId:2)
+|  |  SINK(13: {NetworkSinkDescriptor(partition=1::12::0::0;nodeLocation=tcp://172.31.0.2:42695)})
+|  |  |--MAP_UDF(11)
+|  |  |  |--PROJECTION(10, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |--SOURCE(9,points,LogicalSourceDescriptor(points, points_1))
+|  | QuerySubPlan(queryId:2, querySubPlanId:5)
+|  |  SINK(30: {NetworkSinkDescriptor(partition=2::29::0::0;nodeLocation=tcp://172.31.0.2:42695)})
+|  |  |--MAP_UDF(28)
+|  |  |  |--PROJECTION(27, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |--SOURCE(26,points,LogicalSourceDescriptor(points, points_1))
+|  | QuerySubPlan(queryId:3, querySubPlanId:8)
+|  |  MAP_UDF(45)
+|  |  |--PROJECTION(44, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |--SOURCE(43,points,LogicalSourceDescriptor(points, points_1))
+#+end_example
+
+
+TopDown placement:
+
+#+begin_example
+[20:06:35.379911] [I] [thread 12] [BasePlacementStrategy.cpp:356] [addNetworkSourceAndSinkOperators] ExecutionNode(id:1, ip:172.31.0.2, topologyId:1)
+| QuerySubPlan(queryId:1, querySubPlanId:3)
+|  SINK(5: {FileSinkDescriptor()})
+|  |--SOURCE(12,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 1::12::0::0})
+| QuerySubPlan(queryId:2, querySubPlanId:6)
+|  SINK(22: {FileSinkDescriptor()})
+|  |--SOURCE(29,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 2::29::0::0})
+| QuerySubPlan(queryId:3, querySubPlanId:9)
+|  SINK(39: {FileSinkDescriptor()})
+|  |--SOURCE(46,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 3::46::0::0})
+| QuerySubPlan(queryId:4, querySubPlanId:12)
+|  SINK(56: {FileSinkDescriptor()})
+|  |--MAP_UDF(62)
+|  |  |--PROJECTION(61, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|--ExecutionNode(id:3, ip:172.31.0.4, topologyId:3)
+|  | QuerySubPlan(queryId:1, querySubPlanId:2)
+|  |  SINK(13: {NetworkSinkDescriptor(partition=1::12::0::0;nodeLocation=tcp://172.31.0.2:42695)})
+|  |  |--MAP_UDF(11)
+|  |  |  |--PROJECTION(10, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |--SOURCE(9,points,LogicalSourceDescriptor(points, points_1))
+|  | QuerySubPlan(queryId:2, querySubPlanId:5)
+|  |  SINK(30: {NetworkSinkDescriptor(partition=2::29::0::0;nodeLocation=tcp://172.31.0.2:42695)})
+|  |  |--MAP_UDF(28)
+|  |  |  |--PROJECTION(27, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |--SOURCE(26,points,LogicalSourceDescriptor(points, points_1))
+|  | QuerySubPlan(queryId:3, querySubPlanId:8)
+|  |  SINK(47: {NetworkSinkDescriptor(partition=3::46::0::0;nodeLocation=tcp://172.31.0.2:42695)})
+|  |  |--MAP_UDF(45)
+|  |  |  |--PROJECTION(44, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |--SOURCE(43,points,LogicalSourceDescriptor(points, points_1))
+|  | QuerySubPlan(queryId:4, querySubPlanId:11)
+|  |  SOURCE(60,points,LogicalSourceDescriptor(points, points_1))
+#+end_example
+

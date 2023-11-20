@@ -1,0 +1,30 @@
+###
+### General configuration
+###
+
+logLevel: LOG_ERROR
+#logLevel: LOG_WARNING
+#logLevel: LOG_INFO
+#logLevel: LOG_DEBUG
+
+###
+### Network configuration
+###
+localWorkerIp: 172.31.0.4
+coordinatorIp: coordinator
+
+queryCompiler:
+  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+
+###
+### Physical source configuration
+###
+physicalSources:
+        - logicalSourceName: "points"
+          physicalSourceName: "points_1"
+          type: "CSV_SOURCE"
+          configuration:
+            filePath: "/tutorial/resources/points.csv"
+            skipHeader: true
+
+workerId: 3
