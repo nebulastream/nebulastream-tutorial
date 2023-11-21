@@ -44,7 +44,7 @@ Topology after startup:
 }
 #+end_src
 
-Rewire topology:
+Rewire topology (the order is important -- first add, then delete):
 
 #+begin_src sh
 curl -d '{"parentId": 2, "childId": 3}' http://localhost:8081/v1/nes/topology/addParent
@@ -100,67 +100,19 @@ Topology after rewiring:
 Executing a query, e.g., JavaUdfExample with BottomUp placement:
 
 #+begin_example
-[20:01:57.315918] [I] [thread 12] [BasePlacementStrategy.cpp:356] [addNetworkSourceAndSinkOperators] ExecutionNode(id:1, ip:172.31.0.2, topologyId:1)
+[16:20:12.673860] [D] [thread 12] [QueryPlacementPhase.cpp:134] [execute] QueryPlacementPhase: Update Global Execution Plan:
+ExecutionNode(id:1, ip:172.31.0.2, topologyId:1)
 | QuerySubPlan(queryId:1, querySubPlanId:3)
 |  SINK(5: {FileSinkDescriptor()})
-|  |--SOURCE(12,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 1::12::0::0})
-| QuerySubPlan(queryId:2, querySubPlanId:6)
-|  SINK(22: {FileSinkDescriptor()})
-|  |--SOURCE(29,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 2::29::0::0})
-| QuerySubPlan(queryId:3, querySubPlanId:9)
-|  SINK(39: {FileSinkDescriptor()})
-|--ExecutionNode(id:3, ip:172.31.0.4, topologyId:3)
-|  | QuerySubPlan(queryId:1, querySubPlanId:2)
-|  |  SINK(13: {NetworkSinkDescriptor(partition=1::12::0::0;nodeLocation=tcp://172.31.0.2:42695)})
-|  |  |--MAP_UDF(11)
-|  |  |  |--PROJECTION(10, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |  |--SOURCE(9,points,LogicalSourceDescriptor(points, points_1))
-|  | QuerySubPlan(queryId:2, querySubPlanId:5)
-|  |  SINK(30: {NetworkSinkDescriptor(partition=2::29::0::0;nodeLocation=tcp://172.31.0.2:42695)})
-|  |  |--MAP_UDF(28)
-|  |  |  |--PROJECTION(27, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |  |--SOURCE(26,points,LogicalSourceDescriptor(points, points_1))
-|  | QuerySubPlan(queryId:3, querySubPlanId:8)
-|  |  MAP_UDF(45)
-|  |  |--PROJECTION(44, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |--SOURCE(43,points,LogicalSourceDescriptor(points, points_1))
+|  |--SOURCE(14,,NetworkSourceDescriptor{tcp://172.31.0.3:40927 1::14::0::0})                          <---- Read data from intermediary worker
+|--ExecutionNode(id:2, ip:172.31.0.3, topologyId:2)
+|  | QuerySubPlan(queryId:1, querySubPlanId:4)
+|  |  SINK(15: {NetworkSinkDescriptor(partition=1::14::0::0;nodeLocation=tcp://172.31.0.2:41461)})     <---- Send data to worker in coordinator
+|  |  |--SOURCE(12,,NetworkSourceDescriptor{tcp://172.31.0.4:46033 1::12::0::0})                       <---- Read data from worker with data source
+|  |--ExecutionNode(id:3, ip:172.31.0.4, topologyId:3)
+|  |  | QuerySubPlan(queryId:1, querySubPlanId:2)
+|  |  |  SINK(13: {NetworkSinkDescriptor(partition=1::12::0::0;nodeLocation=tcp://172.31.0.3:40927)})  <---- Send data to intermediary worker
+|  |  |  |--MAP_UDF(11)                                                                                <---- Operations are pushed down (BottomUp placement)
+|  |  |  |  |--PROJECTION(10, schema=points$x:Float(64 bits) points$y:Float(64 bits))
+|  |  |  |  |  |--SOURCE(9,points,LogicalSourceDescriptor(points, points_1))
 #+end_example
-
-
-TopDown placement:
-
-#+begin_example
-[20:06:35.379911] [I] [thread 12] [BasePlacementStrategy.cpp:356] [addNetworkSourceAndSinkOperators] ExecutionNode(id:1, ip:172.31.0.2, topologyId:1)
-| QuerySubPlan(queryId:1, querySubPlanId:3)
-|  SINK(5: {FileSinkDescriptor()})
-|  |--SOURCE(12,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 1::12::0::0})
-| QuerySubPlan(queryId:2, querySubPlanId:6)
-|  SINK(22: {FileSinkDescriptor()})
-|  |--SOURCE(29,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 2::29::0::0})
-| QuerySubPlan(queryId:3, querySubPlanId:9)
-|  SINK(39: {FileSinkDescriptor()})
-|  |--SOURCE(46,,NetworkSourceDescriptor{tcp://172.31.0.4:34449 3::46::0::0})
-| QuerySubPlan(queryId:4, querySubPlanId:12)
-|  SINK(56: {FileSinkDescriptor()})
-|  |--MAP_UDF(62)
-|  |  |--PROJECTION(61, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|--ExecutionNode(id:3, ip:172.31.0.4, topologyId:3)
-|  | QuerySubPlan(queryId:1, querySubPlanId:2)
-|  |  SINK(13: {NetworkSinkDescriptor(partition=1::12::0::0;nodeLocation=tcp://172.31.0.2:42695)})
-|  |  |--MAP_UDF(11)
-|  |  |  |--PROJECTION(10, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |  |--SOURCE(9,points,LogicalSourceDescriptor(points, points_1))
-|  | QuerySubPlan(queryId:2, querySubPlanId:5)
-|  |  SINK(30: {NetworkSinkDescriptor(partition=2::29::0::0;nodeLocation=tcp://172.31.0.2:42695)})
-|  |  |--MAP_UDF(28)
-|  |  |  |--PROJECTION(27, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |  |--SOURCE(26,points,LogicalSourceDescriptor(points, points_1))
-|  | QuerySubPlan(queryId:3, querySubPlanId:8)
-|  |  SINK(47: {NetworkSinkDescriptor(partition=3::46::0::0;nodeLocation=tcp://172.31.0.2:42695)})
-|  |  |--MAP_UDF(45)
-|  |  |  |--PROJECTION(44, schema=points$x:Float(64 bits) points$y:Float(64 bits))
-|  |  |  |  |--SOURCE(43,points,LogicalSourceDescriptor(points, points_1))
-|  | QuerySubPlan(queryId:4, querySubPlanId:11)
-|  |  SOURCE(60,points,LogicalSourceDescriptor(points, points_1))
-#+end_example
-
