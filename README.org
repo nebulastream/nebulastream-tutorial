@@ -1,6 +1,12 @@
 * Try out hierarchical topology                                                        :@comp:FOCUS:
 
-Topology after startup:
+- The coordinator has an internal worker with node ID 1 and IP address 172.31.0.2.
+- =worker-1.yml= creates worker with ID 2 and IP address 172.31.0.3.
+- =worker-2.yml= creates worker with ID 3 and IP address 172.31.0.4. Only this worker has a physical source.
+
+** Topology after startup
+
+Both workers are children of the coordinator.
 
 #+begin_src json
 {
@@ -40,7 +46,9 @@ Topology after startup:
 }
 #+end_src
 
-Rewire topology (the order is important -- first add, then delete):
+** Rewire topology 
+
+- The order is important -- first add, then delete:
 
 #+begin_src sh
 curl -d '{"parentId": 2, "childId": 3}' http://localhost:8081/v1/nes/topology/addParent
@@ -53,7 +61,7 @@ Both commands should print:
 {"success":true}
 #+end_src
 
-Topology after rewiring:
+** Topology after rewiring
 
 #+begin_src json
 {
@@ -93,7 +101,11 @@ Topology after rewiring:
 }
 #+end_src
 
-Executing a query, e.g., JavaUdfExample with BottomUp placement:
+** Executing a query
+
+E.g., JavaUdfExample with BottomUp placement.
+
+Worker 3 has a source but it is not directly connected to worker 1 with the sink => data must flow through intermediary worker 2.
 
 #+begin_example
 [16:20:12.673860] [D] [thread 12] [QueryPlacementPhase.cpp:134] [execute] QueryPlacementPhase: Update Global Execution Plan:
