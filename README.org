@@ -1,9 +1,5 @@
 * Try out hierarchical topology                                                        :@comp:FOCUS:
 
-- [ ] Problem: Execution plan does not seem to involve intermediate worker 2 with IP address 172.31.0.3.
-
-[2023-11-20 Mo]
-
 Topology after startup:
 
 #+begin_src json
