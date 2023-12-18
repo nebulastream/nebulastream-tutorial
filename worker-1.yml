@@ -13,9 +13,6 @@ logLevel: LOG_ERROR
 localWorkerIp: 172.31.0.3
 coordinatorIp: coordinator
 
-queryCompiler:
-  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
-
 ###
 ### Physical source configuration
 ###
