@@ -64,6 +64,7 @@ public class JavaUdfExample {
 
         // Submit the query to the coordinator.
         nebulaStreamRuntime.executeQuery(query, "BottomUp");
+        // nebulaStreamRuntime.executeQuery(query, "ELEGANT_PERFORMANCE");
     }
 
 }

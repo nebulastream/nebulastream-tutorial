@@ -13,8 +13,8 @@ logLevel: LOG_ERROR
 localWorkerIp: 172.31.0.4
 coordinatorIp: coordinator
 
-queryCompiler:
-  queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+# Set custom bandwidth
+bandwidthInMbps: 20
 
 ###
 ### Physical source configuration

@@ -1,12 +1,18 @@
 * Try out hierarchical topology                                                        :@comp:FOCUS:
 
 - The coordinator has an internal worker with node ID 1 and IP address 172.31.0.2.
-- =worker-1.yml= creates worker with ID 2 and IP address 172.31.0.3.
-- =worker-2.yml= creates worker with ID 3 and IP address 172.31.0.4. Only this worker has a physical source.
+- =worker-1.yml= creates worker with ID 2 and IP address 172.31.0.3. Initial bandwidth is 10 Mbit/s to the worker with ID 1.
+- =worker-2.yml= creates worker with ID 3 and IP address 172.31.0.4. Initial bandwidth is 20 Mbit/s to the worker with ID 1. Only this worker has a physical source.
 
 ** Topology after startup
 
-Both workers are children of the coordinator.
+Both workers are children of the coordinator (bandwidth currently not shown).
+
+#+begin_src sh
+curl http://localhost:8081/v1/nes/topology | jq .
+#+end_src
+
+Output:
 
 #+begin_src json
 {
@@ -51,8 +57,8 @@ Both workers are children of the coordinator.
 - The order is important -- first add, then delete:
 
 #+begin_src sh
-curl -d '{"parentId": 2, "childId": 3}' http://localhost:8081/v1/nes/topology/addParent
-curl -X DELETE -d '{"parentId": 1, "childId": 3}' http://localhost:8081/v1/nes/topology/removeParent
+curl -d '{"parentId": 2, "childId": 3, "bandwidth": 30}' http://localhost:8081/v1/nes/topology/addAsChild
+curl -X DELETE -d '{"parentId": 1, "childId": 3}' http://localhost:8081/v1/nes/topology/removeAsChild
 #+end_src
 
 Both commands should print:
@@ -62,6 +68,8 @@ Both commands should print:
 #+end_src
 
 ** Topology after rewiring
+
+- New link now has bandwidth of 30 MBit/s (currently not shown).
 
 #+begin_src json
 {

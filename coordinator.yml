@@ -13,6 +13,9 @@ restIp: 172.31.0.2
 coordinatorIp: 172.31.0.2
 restPort: 8081
 
+worker:
+  localWorkerIp: 172.31.0.2
+
 ###
 ### Logical source configuration
 ###
@@ -24,6 +27,7 @@ logicalSources:
             - name: "y"
               type: "FLOAT64"
 
-worker:
-  queryCompiler:
-    queryCompilerType: "NAUTILUS_QUERY_COMPILER"
+elegant:
+  #accelerateJavaUDFs: "true"
+  plannerServiceURL: "http://localhost:8082/planner/schedule"
+  #accelerationServiceURL: "http://localhost:8080/ElegantAccelerationService-1.0-SNAPSHOT/api/acceleration/submit"
