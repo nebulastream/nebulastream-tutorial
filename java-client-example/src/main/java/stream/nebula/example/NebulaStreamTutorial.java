@@ -25,7 +25,7 @@ public class NebulaStreamTutorial {
         Query query = nebulaStreamRuntime
                 .readFromSource("wind_turbines")
                 .window(TumblingWindow.of(eventTime("features_properties_updated"), minutes(10)))
-                .byKey("metadata_id")
+                .byKey("features_properties_capacity")
                 .apply(Aggregation.sum("features_properties_mag"));
 
         // Finish the query with a sink
