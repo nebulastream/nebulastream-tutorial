@@ -29,11 +29,7 @@ public class NebulaStreamTutorial {
                 .apply(Aggregation.sum("features_properties_mag"));
 
         // Finish the query with a sink
-        Sink sink = query.sink(new FileSink("/tutorial/java-query-results.csv", "CSV_FORMAT", true));
-
-        // The line below is necessary because of a bug when submitting queries with aggregations over Protobuf.
-        // TODO https://github.com/nebulastream/nebulastream/issues/3429
-        nebulaStreamRuntime.setSerializer(new CppQueryRequestSerializer());
+        Sink sink = query.sink(new FileSink("/tutorial/java-query-results.csv", "CSV_FORMAT", false));
 
         // Submit the query to the coordinator.
         int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
