@@ -1,10 +1,12 @@
 package stream.nebula.example;
 
+import org.json.JSONObject;
 import stream.nebula.exceptions.RESTException;
 import stream.nebula.operators.Aggregation;
 import stream.nebula.operators.sinks.FileSink;
 import stream.nebula.operators.sinks.Sink;
 import stream.nebula.operators.window.TumblingWindow;
+import stream.nebula.runtime.ExplainRequestProcessor;
 import stream.nebula.runtime.NebulaStreamRuntime;
 import stream.nebula.runtime.Query;
 import stream.nebula.serialization.cpp.CppQueryRequestSerializer;
@@ -62,8 +64,12 @@ public class JavaUdfExample {
         // Finish the query with a sink
         Sink sink = query.sink(new FileSink("/tutorial/output/java-udf-results.csv", "CSV_FORMAT", true));
 
-        // Submit the query to the coordinator.
-        nebulaStreamRuntime.executeQuery(query, "BottomUp");
+        // Remove comments to execute query.
+        //nebulaStreamRuntime.executeQuery(query, "BottomUp");
+
+        // Remove comments to generate C++ code pipelines in folder "cpp".
+        //JSONObject response = nebulaStreamRuntime.explainQuery(query, "BottomUp");
+        //new ExplainRequestProcessor().storeCppCodePipelines(response, "cpp");
     }
 
 }
