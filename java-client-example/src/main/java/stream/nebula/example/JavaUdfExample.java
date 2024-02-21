@@ -68,8 +68,8 @@ public class JavaUdfExample {
         //nebulaStreamRuntime.executeQuery(query, "BottomUp");
 
         // Remove comments to generate C++ code pipelines in folder "cpp".
-        //JSONObject response = nebulaStreamRuntime.explainQuery(query, "BottomUp");
-        //new ExplainRequestProcessor().storeCppCodePipelines(response, "cpp");
+        JSONObject response = nebulaStreamRuntime.explainQuery(query, "BottomUp");
+        new ExplainRequestProcessor().storeCppCodePipelines(response, "cpp");
     }
 
 }
