@@ -11,7 +11,7 @@ logLevel: LOG_ERROR
 ### Network configuration
 ###
 localWorkerIp: 172.31.0.3
-coordinatorIp: coordinator
+coordinatorIp: 172.31.0.2
 
 ###
 ### Physical source configuration
@@ -35,3 +35,5 @@ physicalSources:
           configuration:
             filePath: /tutorial/resources/iris_short.csv
             skipHeader: false
+
+workerId: 2
