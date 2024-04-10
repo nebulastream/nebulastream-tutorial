@@ -4,8 +4,6 @@
 logLevel: LOG_ERROR
 #logLevel: LOG_WARNING
 #logLevel: LOG_DEBUG
-optimizer:
-        distributedWindowChildThreshold: 3
 
 ###
 ### Network configuration
