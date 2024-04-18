@@ -18,7 +18,7 @@ set -e
 if [ $# -eq 0 ]
 then
   # Start the coordinator.
-  nesCoordinator --configPath=/resources/coordinator.yml --coordinatorIp=0.0.0.0 --restIp=0.0.0.0 &
+  nesCoordinator --configPath=/resources/coordinator.yml --coordinatorIp=0.0.0.0 --restIp=0.0.0.0 --worker.localWorkerIp=0.0.0.0 &
   sleep 2s
 
   # Start the worker.
