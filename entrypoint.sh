@@ -22,7 +22,7 @@ then
   sleep 2s
 
   # Start the worker.
-  nesWorker --logLevel=LOG_ERROR --physicalSources.type=CSVSource --physicalSources.filePath=/resources/wind-turbine-1.csv --physicalSources.numberOfBuffersToProduce=1024 --physicalSources.physicalSourceName=wind_turbine_1 --physicalSources.logicalSourceName=wind_turbines --physicalSources.skipHeader=true --physicalSources.numberOfTuplesToProducePerBuffer=0 &
+  nesWorker --logLevel=LOG_ERROR --physicalSources.type=CSV_SOURCE --physicalSources.filePath=/resources/wind-turbine-1.csv --physicalSources.numberOfBuffersToProduce=1024 --physicalSources.physicalSourceName=wind_turbine_1 --physicalSources.logicalSourceName=wind_turbines --physicalSources.skipHeader=true --physicalSources.numberOfTuplesToProducePerBuffer=0 &
   sleep 2s
 
   # Execute a query.
