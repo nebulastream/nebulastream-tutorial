@@ -4,16 +4,18 @@
 logLevel: LOG_ERROR
 #logLevel: LOG_WARNING
 #logLevel: LOG_DEBUG
+# optimizer:
+#   distributedWindowChildThreshold: 3
 
 ###
 ### Network configuration
 ###
 restIp: 172.31.0.2
-coordinatorIp: 172.31.0.2
+coordinatorHost: 172.31.0.2
 restPort: 8081
 
 worker:
-  localWorkerIp: 172.31.0.2
+  localWorkerHost: 172.31.0.2
 
 ###
 ### Logical source configuration
