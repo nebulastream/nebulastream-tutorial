@@ -21,7 +21,7 @@ physicalSources:
           physicalSourceName: "mqtt-source-1"
           type: "MQTT_SOURCE"
           configuration:
-            url: "ws://172.31.0.21:9001"
+            url: "ws://mosquitto:9001"
             clientId: "abc"
             userName: "xyz"
             topic: "test-mqtt-in"
