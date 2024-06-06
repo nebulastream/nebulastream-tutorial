@@ -1,7 +1,7 @@
-version: "3"
 services:
   coordinator:
-    image: nebulastream/nes-executable-image:latest
+    image: "nebulastream/nes-executable-image:latest"
+    container_name: "coordinator"
     entrypoint: ["bash", "-c", "nesCoordinator --configPath=/tutorial/coordinator.yml"]
     ports:
       - 8081:8081
@@ -11,7 +11,8 @@ services:
       nebulastream-network:
         ipv4_address: 172.31.0.2
   worker:
-    image: nebulastream/nes-executable-image:latest
+    container_name: "worker-1"
+    image: "nebulastream/nes-executable-image:latest"
     entrypoint: ["bash", "-c", "sleep 3 && nesWorker --configPath=/tutorial/worker-1.yml"]
     volumes:
       - ./:/tutorial
@@ -19,14 +20,16 @@ services:
       nebulastream-network:
         ipv4_address: 172.31.0.11
   ui:
-    image: nebulastream/nes-ui-image:latest
+    container_name: "nebulastream-ui"
+    image: "nebulastream/nes-ui-image:latest"
     ports:
       - 9000:9000
     networks:
       nebulastream-network:
         ipv4_address: 172.31.0.3
   mosquitto:
-    image: eclipse-mosquitto
+    container_name: "mosquitto"
+    image: "eclipse-mosquitto"
     ports:
       - 1885:1885
       - 9001:9001
@@ -36,8 +39,8 @@ services:
       nebulastream-network:
         ipv4_address: 172.31.0.21
   grafana:
-    image: grafana/grafana-enterprise
-    container_name: grafana
+    image: "grafana/grafana-enterprise"
+    container_name: "grafana"
     restart: unless-stopped
     ports:
       - '3000:3000'
@@ -48,6 +51,7 @@ services:
         ipv4_address: 172.31.0.22
 networks:
   nebulastream-network:
+    name: "tutorial-network"
     ipam:
       config:
         - subnet: 172.31.0.0/24
