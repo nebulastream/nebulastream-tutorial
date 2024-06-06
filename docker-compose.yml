@@ -8,7 +8,7 @@ services:
     volumes:
       - ./:/tutorial
     networks:
-      nebulastream-network:
+      default:
         ipv4_address: 172.31.0.2
   worker:
     container_name: "worker-1"
@@ -17,16 +17,13 @@ services:
     volumes:
       - ./:/tutorial
     networks:
-      nebulastream-network:
+      default:
         ipv4_address: 172.31.0.11
   ui:
     container_name: "nebulastream-ui"
     image: "nebulastream/nes-ui-image:latest"
     ports:
       - 9000:9000
-    networks:
-      nebulastream-network:
-        ipv4_address: 172.31.0.3
   mosquitto:
     container_name: "mosquitto"
     image: "eclipse-mosquitto"
@@ -35,9 +32,6 @@ services:
       - 9001:9001
     volumes:
       - ./mosquitto/config:/mosquitto/config
-    networks:
-      nebulastream-network:
-        ipv4_address: 172.31.0.21
   grafana:
     image: "grafana/grafana-enterprise"
     container_name: "grafana"
@@ -46,12 +40,15 @@ services:
       - '3000:3000'
     volumes:
       - ./grafana-storage:/var/lib/grafana
-    networks:
-      nebulastream-network:
-        ipv4_address: 172.31.0.22
 networks:
-  nebulastream-network:
-    name: "tutorial-network"
+  default:
     ipam:
       config:
-        - subnet: 172.31.0.0/24
+        # Configuring a /16 subnet and a /24 IP range allows us to mix containers that use explicit IP addresses
+        # (e.g., coordinator, worker) and containers that have their IP address implicitly assigned
+        # (e.g, ui, mosquitto, grafana). Explicit IP addresses must not be inside the specified /24 IP range,
+        # otherwise `docker compose´ may fail with an error message:
+        #     Gracefully stopping... (press Ctrl+C again to force)
+        #     Error response from daemon: Address already in use
+        - subnet: 172.31.0.0/16
+          ip_range: 172.31.1.0/24
