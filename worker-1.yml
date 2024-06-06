@@ -17,6 +17,18 @@ coordinatorHost: 172.31.0.2
 ### Physical source configuration
 ###
 physicalSources:
+        - logicalSourceName: "mqtt-source"
+          physicalSourceName: "mqtt-source-1"
+          type: "MQTT_SOURCE"
+          configuration:
+            url: "ws://172.31.0.11:9001"
+            clientId: "abc"
+            userName: "xyz"
+            topic: "test-mqtt-in"
+            cleanSession: true
+            flushIntervalMS: 10
+            inputFormat: JSON
+            qos: 2
         - logicalSourceName: "points"
           physicalSourceName: "points_1"
           type: "CSV_SOURCE"

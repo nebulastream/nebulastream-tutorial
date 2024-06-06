@@ -19,6 +19,14 @@ worker:
 ### Logical source configuration
 ###
 logicalSources:
+        - logicalSourceName: "mqtt-source"
+          fields:
+#            - name: "k"
+#              type: "INT32"
+            - name: "v"
+              type: "INT32"
+            - name: "s"
+              type: "TEXT"
         - logicalSourceName: "points"
           fields:
             - name: "x"
