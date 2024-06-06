@@ -1,0 +1,72 @@
+###
+### General configuration
+###
+logLevel: LOG_ERROR
+#logLevel: LOG_WARNING
+#logLevel: LOG_DEBUG
+
+###
+### Network configuration
+###
+restIp: 172.31.0.2
+coordinatorHost: coordinator
+
+worker:
+  localWorkerHost: 172.31.0.2
+
+###
+### Logical source configuration
+###
+logicalSources:
+  - logicalSourceName: "mqtt-source"
+    fields:
+      - name: "v"
+        type: "INT32"
+      - name: "s"
+        type: "TEXT"
+  - logicalSourceName: "iris"
+    fields:
+      - name: "id"
+        type: "UINT64"
+      - name: "f1"
+        type: "FLOAT32"
+      - name: "f2"
+        type: "FLOAT32"
+      - name: "f3"
+        type: "FLOAT32"
+      - name: "f4"
+        type: "FLOAT32"
+      - name: "target"
+        type: "UINT64"
+  - logicalSourceName: "windTurbines"
+    fields:
+      - name: cityId
+        type: INT8
+      - name: producerId
+        type: INT8
+      - name: producedPower
+        type: FLOAT32
+      - name: timestamp
+        type: UINT64
+  - logicalSourceName: "solarPanels"
+    fields:
+      - name: cityId
+        type: INT8
+      - name: producerId
+        type: INT8
+      - name: producedPower
+        type: FLOAT32
+      - name: timestamp
+        type: UINT64
+  - logicalSourceName: "consumers"
+    fields:
+      - name: cityId
+        type: INT8
+      - name: sectorId
+        type: INT8
+      - name: consumerId
+        type: INT8
+      - name: consumedPower
+        type: FLOAT32
+      - name: timestamp
+        type: UINT64

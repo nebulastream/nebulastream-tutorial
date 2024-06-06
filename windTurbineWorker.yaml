@@ -1,0 +1,24 @@
+# Logging
+logLevel: LOG_ERROR
+#logLevel: LOG_DEBUG
+
+# Network configuration
+localWorkerHost: 172.31.0.14
+coordinatorHost: coordinator
+
+# Physical source configuration
+physicalSources:
+  - logicalSourceName: windTurbines
+    physicalSourceName: windTurbines
+    type: MQTT_SOURCE
+    configuration:
+      clientId: nesMQTTSource
+      userName: nesSource
+      url: ws://mosquitto:9001
+      topic: windTurbines
+      qos: 2
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
+
+workerId: 4
