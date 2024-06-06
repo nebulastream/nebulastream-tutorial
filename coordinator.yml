@@ -11,8 +11,7 @@ logLevel: LOG_ERROR
 ### Network configuration
 ###
 restIp: 172.31.0.2
-coordinatorHost: 172.31.0.2
-restPort: 8081
+coordinatorHost: coordinator
 
 worker:
   localWorkerHost: 172.31.0.2
