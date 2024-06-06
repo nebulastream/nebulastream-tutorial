@@ -11,7 +11,7 @@ logLevel: LOG_ERROR
 ### Network configuration
 ###
 localWorkerHost: 172.31.0.11
-coordinatorHost: 172.31.0.2
+coordinatorHost: coordinator
 
 ###
 ### Physical source configuration
