@@ -1,0 +1,24 @@
+# Logging
+logLevel: LOG_ERROR
+#logLevel: LOG_DEBUG
+
+# Network configuration
+localWorkerHost: 172.31.0.13
+coordinatorHost: coordinator
+
+# Physical source configuration
+physicalSources:
+  - logicalSourceName: solarPanels
+    physicalSourceName: solarPanels
+    type: MQTT_SOURCE
+    configuration:
+      clientId: nesMQTTSource
+      userName: nesSource
+      url: ws://mosquitto:9001
+      topic: solarPanels
+      qos: 2
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
+
+workerId: 3

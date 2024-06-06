@@ -12,8 +12,8 @@ RUN apt-get update -q && DEBIAN_FRONTEND="noninteractive" apt-get install --no-i
 
 # Copy the entry point shell script.
 COPY ./entrypoint.sh /
-COPY ./coordinator.yml /resources
-COPY ./worker-1.yml /resources
+COPY coordinator.yaml /resources
+COPY worker-1.yaml /resources
 COPY ./wind-turbine-1.csv /resources
 COPY ./rest-query-with-csv-sink.json /resources
 
