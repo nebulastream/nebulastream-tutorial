@@ -24,12 +24,12 @@ public class MqttExample {
 
         // Create a streaming query
         Query query = nebulaStreamRuntime
-        //                .readFromSource("mqtt-source")
-        //                .map("v", attribute("v").add(1));
-        //
-        //        // Finish the query with a sink
+                        .readFromSource("mqtt-source")
+                        .map("v", attribute("v").add(1));
+
+        // Finish the query with a sink
 //        Sink sink = query.sink(new FileSink("/tutorial/output/mqtt-query-results.csv", "CSV_FORMAT", false));
-        Sink sink = query.sink(new MQTTSink("ws://172.31.0.11:9001", "test-mqtt-out", "xyz", 1,
+        Sink sink = query.sink(new MQTTSink("ws://172.31.0.21:9001", "test-mqtt-out", "xyz", 1,
                 MQTTSink.TimeUnits.milliseconds, 10, MQTTSink.ServiceQualities.exactlyOnce, true));
 
         // Submit the query to the coordinator.

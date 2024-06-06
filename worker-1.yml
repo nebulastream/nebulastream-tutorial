@@ -10,7 +10,7 @@ logLevel: LOG_ERROR
 ###
 ### Network configuration
 ###
-localWorkerHost: 172.31.0.3
+localWorkerHost: 172.31.0.11
 coordinatorHost: 172.31.0.2
 
 ###
@@ -21,7 +21,7 @@ physicalSources:
           physicalSourceName: "mqtt-source-1"
           type: "MQTT_SOURCE"
           configuration:
-            url: "ws://172.31.0.11:9001"
+            url: "ws://172.31.0.21:9001"
             clientId: "abc"
             userName: "xyz"
             topic: "test-mqtt-in"

@@ -17,6 +17,13 @@ services:
       - ./:/tutorial
     networks:
       nebulastream-network:
+        ipv4_address: 172.31.0.11
+  ui:
+    image: nebulastream/nes-ui-image:latest
+    ports:
+      - 9000:9000
+    networks:
+      nebulastream-network:
         ipv4_address: 172.31.0.3
   mosquitto:
     image: eclipse-mosquitto
@@ -27,14 +34,7 @@ services:
       - ./mosquitto/config:/mosquitto/config
     networks:
       nebulastream-network:
-        ipv4_address: 172.31.0.11
-  ui:
-    image: nebulastream/nes-ui-image:latest
-    ports:
-      - 9000:9000
-    networks:
-      nebulastream-network:
-        ipv4_address: 172.31.0.12
+        ipv4_address: 172.31.0.21
   grafana:
     image: grafana/grafana-enterprise
     container_name: grafana
@@ -45,7 +45,7 @@ services:
       - ./grafana-storage:/var/lib/grafana
     networks:
       nebulastream-network:
-        ipv4_address: 172.31.0.13
+        ipv4_address: 172.31.0.22
 networks:
   nebulastream-network:
     ipam:
