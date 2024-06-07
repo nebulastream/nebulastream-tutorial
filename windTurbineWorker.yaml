@@ -12,8 +12,8 @@ physicalSources:
     physicalSourceName: windTurbines
     type: MQTT_SOURCE
     configuration:
-      clientId: nesMQTTSource
-      userName: nesSource
+      clientId: NES_
+      userName: windTurbines
       url: ws://mosquitto:9001
       topic: windTurbines
       qos: 2
@@ -21,4 +21,4 @@ physicalSources:
       cleanSession: true
       flushIntervalMS: 60
 
-workerId: 4
+workerId: 5
