@@ -12,12 +12,12 @@ physicalSources:
     physicalSourceName: consumers
     type: MQTT_SOURCE
     configuration:
-      clientId: nesMQTTSource
-      userName: nesSource
+      clientId: NES_
+      userName: consumers
       url: ws://mosquitto:9001
       topic: consumers
       qos: 2
       inputFormat: JSON
       cleanSession: true
       flushIntervalMS: 10
-workerId: 5
+workerId: 4

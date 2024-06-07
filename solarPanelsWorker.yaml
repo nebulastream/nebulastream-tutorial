@@ -12,8 +12,8 @@ physicalSources:
     physicalSourceName: solarPanels
     type: MQTT_SOURCE
     configuration:
-      clientId: nesMQTTSource
-      userName: nesSource
+      clientId: NES_
+      userName: solarPanels
       url: ws://mosquitto:9001
       topic: solarPanels
       qos: 2
