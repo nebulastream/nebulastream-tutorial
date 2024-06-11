@@ -3,7 +3,7 @@ logLevel: LOG_ERROR
 #logLevel: LOG_DEBUG
 
 # Network configuration
-localWorkerHost: 172.31.0.13
+localWorkerHost: solarpanels-worker
 coordinatorHost: coordinator
 
 # Physical source configuration

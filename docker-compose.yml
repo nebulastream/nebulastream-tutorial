@@ -7,9 +7,6 @@ services:
       - 8081:8081
     volumes:
       - ./:/tutorial
-    networks:
-      default:
-        ipv4_address: 172.31.0.2
 
   test-worker:
     image: "nebulastream/nes-executable-image:latest"
@@ -18,9 +15,6 @@ services:
       - coordinator
     volumes:
       - "./:/tutorial"
-    networks:
-      default:
-        ipv4_address: 172.31.0.11
 
   consumers-worker:
     image: "nebulastream/nes-executable-image:latest"
@@ -29,9 +23,6 @@ services:
       - coordinator
     volumes:
       - "./:/tutorial"
-    networks:
-      default:
-        ipv4_address: 172.31.0.12
 
   solarpanels-worker:
     image: "nebulastream/nes-executable-image:latest"
@@ -40,9 +31,6 @@ services:
       - coordinator
     volumes:
       - "./:/tutorial"
-    networks:
-      default:
-        ipv4_address: 172.31.0.13
 
   windturbine-worker:
     image: "nebulastream/nes-executable-image:latest"
@@ -51,9 +39,6 @@ services:
       - coordinator
     volumes:
       - "./:/tutorial"
-    networks:
-      default:
-        ipv4_address: 172.31.0.14
 
   datatown:
     image: "nebulastream/nes-smart-city-image:latest"
@@ -81,16 +66,3 @@ services:
       - '3000:3000'
     volumes:
       - ./grafana-storage:/var/lib/grafana
-
-networks:
-  default:
-    ipam:
-      config:
-        # Configuring a /16 subnet and a /24 IP range allows us to mix containers that use explicit IP addresses
-        # (e.g., coordinator, worker) and containers that have their IP address implicitly assigned
-        # (e.g, ui, mosquitto, grafana). Explicit IP addresses must not be inside the specified /24 IP range,
-        # otherwise `docker compose´ may fail with an error message:
-        #     Gracefully stopping... (press Ctrl+C again to force)
-        #     Error response from daemon: Address already in use
-        - subnet: 172.31.0.0/16
-          ip_range: 172.31.1.0/24
