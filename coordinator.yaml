@@ -8,11 +8,11 @@ logLevel: LOG_ERROR
 ###
 ### Network configuration
 ###
-restIp: 172.31.0.2
+restIp: 0.0.0.0
 coordinatorHost: coordinator
 
 worker:
-  localWorkerHost: 172.31.0.2
+  localWorkerHost: coordinator
 
 ###
 ### Logical source configuration
