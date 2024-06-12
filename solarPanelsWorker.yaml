@@ -14,7 +14,9 @@ physicalSources:
     physicalSourceName: solarPanels
     type: MQTT_SOURCE
     configuration:
-      clientId: NES_
+      # The client ID under which the source connects to the MQTT broker.
+      # Needs to be unique for each source to avoid frequent disconnections and possible query failures.
+      clientId: NES_source_solarPanels_
       userName: solarPanels
       url: ws://mosquitto:9001
       topic: solarPanels
