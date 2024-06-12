@@ -25,7 +25,7 @@ public class MqttExample {
         // Create a streaming query
         Query query = nebulaStreamRuntime
                         .readFromSource("mqtt-source")
-                        .map("v", attribute("v").add(1));
+                        .map("intField", attribute("intField").add(1));
 
         // Finish the query with a sink
 //        Sink sink = query.sink(new FileSink("/tutorial/output/mqtt-query-results.csv", "CSV_FORMAT", false));

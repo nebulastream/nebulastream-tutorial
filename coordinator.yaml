@@ -21,9 +21,11 @@ worker:
 logicalSources:
   - logicalSourceName: "mqtt-source"
     fields:
-      - name: "v"
+      - name: "intField"
         type: "INT32"
-      - name: "s"
+      - name: "booleanField"
+        type: "BOOLEAN"
+      - name: "textField"
         type: "TEXT"
   - logicalSourceName: "iris"
     fields:
