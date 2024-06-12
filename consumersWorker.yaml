@@ -1,5 +1,7 @@
 # Logging
 logLevel: LOG_ERROR
+#logLevel: LOG_INFO
+#logLevel: LOG_WARNING
 #logLevel: LOG_DEBUG
 
 # Network configuration
