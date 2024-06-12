@@ -22,7 +22,7 @@ physicalSources:
     type: "MQTT_SOURCE"
     configuration:
       url: "ws://mosquitto:9001"
-      clientId: "abc"
+      clientId: "NES_test_worker_"
       userName: "xyz"
       topic: "test-mqtt-in"
       cleanSession: true
