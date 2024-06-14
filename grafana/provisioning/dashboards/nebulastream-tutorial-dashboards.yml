@@ -1,0 +1,11 @@
+# Automatically provision the NebulaStream tutorial dashboard.
+# See: https://grafana.com/docs/grafana/latest/administration/provisioning/
+
+apiVersion: 1
+
+providers:
+  - name: 'NebulaStream tutorial dashboards'
+    disableDeletion: false
+    allowUiUpdates: true
+    options:
+      path: '/var/lib/grafana/dashboards'
