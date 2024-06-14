@@ -7,9 +7,6 @@
 # Unfortunately, the URI to the MQTT server is not picked up automatically.
 # Before the dashboard can be first used, it has to be configured manually.
 # See: https://community.grafana.com/t/unable-to-set-mqtt-broker-uri-when-provisioning-mqtt-datasource-in-docker-container/124033
-#
-# Also, the configuration is not saved between restarts of the container.
-# See: https://community.grafana.com/t/the-settings-of-the-datasources-in-the-ui-are-not-saved-when-using-provisioning-after-restarting-grafana/104429/2
 
 apiVersion: 1
 
@@ -22,3 +19,4 @@ datasources:
     url: 'ws://mosquitto:9001'
     isDefault: true
     editable: true
+    version: 1
