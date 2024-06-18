@@ -55,7 +55,9 @@ RUN if [ $GF_INSTALL_IMAGE_RENDERER_PLUGIN = "true" ]; then \
       fi \
     fi
 
-ARG GF_INSTALL_PLUGINS=""
+# Install the MQTT datasource plugin
+# https://grafana.com/grafana/plugins/grafana-mqtt-datasource/
+ARG GF_INSTALL_PLUGINS="grafana-mqtt-datasource"
 
 RUN if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then \
       OLDIFS=$IFS; \
