@@ -55,7 +55,7 @@ coordinator:
     - 8081:8081
   volumes:
     - ./:/tutorial
-  #+end_src
+#+end_src
   
 - *consumers-worker*, *solarpanels-worker*, *windturbine-worker*: The Docker Compose configuration specifies multiple workers, which are configured to retrieve data from various data sources.
   These also use the =nebulastream/nebulastream-executable-image= image with a custom entry point that specifies a worker-specific configuration file. The example below shows the *consumers-worker*; other workers are configured similarly.
@@ -68,7 +68,7 @@ consumers-worker:
     - coordinator
   volumes:
     - ./:/tutorial
-  #+end_src
+#+end_src
 
 - *datatown*: This Docker container provides a 3D visualization of IoTropolis that runs in a web browser.
   The container also generates data for solar panels, wind turbines, and consumers.
@@ -80,7 +80,7 @@ datatown:
   image: nebulastream/nes-smart-city-image:latest
   ports:
     - 9003:9003
-  #+end_src
+#+end_src
 
 - *ui*: This Docker container provides the web-based NebulaStream UI through which users can submit NebulaStream queries, monitor existing queries, and retrieve information about the NebulaStream cluster topology and available data sources.
 
@@ -89,7 +89,7 @@ ui:
   image: nebulastream/nes-ui-image:latest
   ports:
     - 9000:9000
-  #+end_src
+#+end_src
 
 - *mosquitto*: The tutorial uses [[https://mosquitto.org/][Eclipse Mosquitto]] as an MQTT broker to exchange data between the data generator and the workers.
   The data generator publishes events from the different energy consumers and producers to different MQTT topics.
@@ -105,7 +105,7 @@ mosquitto:
     - 9002:9002
   volumes:
     - ./mosquitto/config:/mosquitto/config
-  #+end_src
+#+end_src
 
 - *grafana*: The tutorial also uses [[https://grafana.com/][Grafana]] to visualize input data and query results.
   This container is custum-built with Docker Compose to provision a preinstalled MQTT datasource and custom dashboard for the tutorial.
@@ -122,7 +122,7 @@ services:
 
 volumes:
   grafana-storage: {}    
-  #+end_src
+#+end_src
 
 A number of Docker services, e.g., the coordinator, the data generator, the UI, Mosquitto, and Grafana, expose ports, so that we can interact with them on the host system.
 
@@ -285,7 +285,9 @@ A physical source is configured with the following options:
 An MQTT source has the following configuration options:
 
 - =url=: The URL of the MQTT broker.
-- =clientId=: The client ID under which the source connects to the MQTT broker. *Note:* Every worker has to connect using a unique client ID.
+- =clientId=: The client ID under which the source connects to the MQTT broker.
+
+  *Note:* Every worker has to connect using a unique client ID.
 - =topic=: The topic to which this physical source should subscribe.
 
 TODO: Document additional fields and clean up.
