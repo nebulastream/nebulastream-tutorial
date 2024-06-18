@@ -6,7 +6,7 @@ logLevel: LOG_ERROR
 coordinatorHost: coordinator
 
 # Hostname under which this worker registers with the coordinator. Corresponds to the service name in docker-compose.yml.
-localWorkerHost: windturbines-worker
+localWorkerHost: windturbine-worker
 
 # Physical source configuration
 physicalSources:
