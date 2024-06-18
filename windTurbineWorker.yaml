@@ -20,7 +20,7 @@ physicalSources:
       userName: windTurbines
       url: ws://mosquitto:9001
       topic: windTurbines
-      qos: 2
+      qos: 0
       inputFormat: JSON
       cleanSession: true
       flushIntervalMS: 60

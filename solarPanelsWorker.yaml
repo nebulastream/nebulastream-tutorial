@@ -20,7 +20,7 @@ physicalSources:
       userName: solarPanels
       url: ws://mosquitto:9001
       topic: solarPanels
-      qos: 2
+      qos: 0
       inputFormat: JSON
       cleanSession: true
       flushIntervalMS: 60
