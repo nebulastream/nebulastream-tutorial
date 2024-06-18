@@ -1,6 +1,8 @@
+* Description
+
 The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to and and visualize their results.
 
-** IoTropolis -- the NebulaStream smart city
+* IoTropolis -- the NebulaStream smart city
 
 The tutorial is based on a smart city scenario, the NebulaStream IoTropolis.
 In this smart city, wind turbines and solar panels /produce/ energy, whereas households, offices, factories, and street lights /consume/ energy.
@@ -16,8 +18,7 @@ TODO: Animation
 - Show labels with aggregate information
 - Zoom out
 - Show street that street lights turn off
-
-** Installation and execution
+* Installation and execution
 
 The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compose]]:
 
@@ -31,7 +32,7 @@ docker compose up --build
 
 In the last command, =--build= can be omitted from subsequent restarts of the containers.
 
-** Docker services
+* Docker services
 :PROPERTIES:
 :ID:       EE9DC662-28B7-4259-A49A-6ACB7C533D3C
 :END:
@@ -40,7 +41,7 @@ The [[file:docker-compose.yml][docker-compose.yml]] file configures and starts t
 
 #+CAPTION: Docker services in the NebulaStream tutorial.
 #+ATTR_HTML: :width 800
-[[file:~/my/work/nes/nebulastream-tutorial/doc/docker-services.png]]
+[[file:doc/docker-services.png]]
 
 - *coordinator*: This Docker container runs the image =nebulastream/nebulastream-executable-image=.
   This image contains the binaries for both the NebulaStream coordinator and the NebulaStream worker, so we specify a custom entry point to run the coordinator.
@@ -127,13 +128,13 @@ A number of Docker services, e.g., the coordinator, the data generator, the UI, 
 
 The coordinator and the worker also mount the folder =resources/config/nebulastream=, so that we can provide configuration files to the container.
 
-** Configuring NebulaStream
+* Configuring NebulaStream
 
 A minimal NebulaStream configuration must configure network options, as well as logical and physical sources.
 Logical sources specify the data schema and are part of the coordinator configuration.
 Physical sources specify how data is obtained and are part of the configuration of a worker.
 
-*** Coordinator configuration
+** Coordinator configuration
 :PROPERTIES:
 :CUSTOM_ID: coordinator-configuration
 :END:
@@ -146,7 +147,7 @@ nesCoordinator --configPath=/tutorial/coordinator.yaml
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#coordinator-configuration-options][NebulaStream documentation: Coordinator Configuration Options]]
 
-**** Logging options
+*** Logging options
 
 The configuration file first specifies a log level:
 
@@ -154,7 +155,7 @@ The configuration file first specifies a log level:
 logLevel: LOG_ERROR
 #+end_src
 
-**** Networking options
+*** Networking options
 
 Next, we specify network information.
 
@@ -176,7 +177,7 @@ worker:
   localWorkerHost: coordinator
 #+end_src
 
-**** Logical sources
+*** Logical sources
 
 A logical source represents an stream of input tuples, possibly from muliple sensors, that share common characteristics. A logical has two properties:
 
@@ -235,7 +236,7 @@ logicalSources:
 
 Further information: [[https://docs.nebula.stream/docs/nebulastream/general-concepts/#defining-data-sources][NebulaStream documentation: Defining Data Sources]]
 
-*** Worker configuration 
+** Worker configuration 
 
 Each NebulaStream worker is configured through a dedicated configuration file, which are mounted in the Docker container in the folder =tutorial= and passed to the =--configPath= command line option. For example, the =consumers= worker is started as follows:
 
@@ -245,7 +246,7 @@ nesWorker --configPath=/tutorial/consumersWorker.yaml
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#worker-configuration-options][NebulaStream documentation: Worker Configuration Options]]
 
-**** Logging options
+*** Logging options
 
 The configuration file first specifies a log level:
 
@@ -253,7 +254,7 @@ The configuration file first specifies a log level:
 logLevel: LOG_ERROR
 #+end_src
 
-**** Network options
+*** Network options
 
 Next, we specify network information.
 
@@ -268,7 +269,7 @@ coordinatorHost: coordinator
 localWorkerHost: consumers-worker
 #+end_src
 
-**** Physical sources
+*** Physical sources
 
 A physical source connects to a concrete data source. Each physical source is associated with a specific logical source. The tuples provided by the data source have to match the schema of the logical source. Multiple physical sources can be associated with a single logical source, even across multiple NebulaStream workers. 
 
@@ -307,7 +308,7 @@ physicalSources:
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#physical-sources-configuration][NebulaStream documentation: Physical Sources Configuration]]
 
-** Visualizing the input data
+* Visualizing the input data
 
 With Docker containers running, we can already visualize the generated input data in Grafana:
 
@@ -333,7 +334,7 @@ With Docker containers running, we can already visualize the generated input dat
 Of course, the purpose of NebulaStream is to execute streaming queries.
 We can submit queries to NebulaStream using the web UI, which we describe next.
 
-** The NebulaStream web UI
+* The NebulaStream web UI
 
 The NebulaStream web UI can be accessed at http://localhost:9000. It provides the following functionality:
 
@@ -342,11 +343,11 @@ The NebulaStream web UI can be accessed at http://localhost:9000. It provides th
 - Source catalog: Display information about the defined physical sources.
 - Settings: Configure how the coordinator can be configured over the network.
 
-*** Query catalog
+** Query catalog
 
 
 
-** Running NebulaStream queries
+* Running NebulaStream queries
 
  NebulaStream supports queries with the following operators:
 
