@@ -2,6 +2,7 @@
 logLevel: LOG_ERROR
 
 # Hostname of the coordinator. Passed to the internal worker, so it can connect over the local network.
+# Corresponds to the service name in docker-compose.yml.
 coordinatorHost: coordinator
 
 # IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
