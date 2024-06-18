@@ -1,12 +1,12 @@
-# Logging
+# Logging configuration. Valid options are: LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG, LOG_TRACE
 logLevel: LOG_ERROR
-#logLevel: LOG_INFO
-#logLevel: LOG_WARNING
-#logLevel: LOG_DEBUG
 
-# Network configuration
-localWorkerHost: consumers-worker
+# Hostname of the coordinator, to which the worker should register upon startup.
+# Corresponds to the service name in docker-compose.yml.
 coordinatorHost: coordinator
+
+# Hostname under which this worker registers with the coordinator. Corresponds to the service name in docker-compose.yml.
+localWorkerHost: consumers-worker
 
 # Physical source configuration
 physicalSources:
