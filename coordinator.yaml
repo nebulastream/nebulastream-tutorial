@@ -1,23 +1,22 @@
-###
-### General configuration
-###
+# Logging configuration. Valid options are: LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG, LOG_TRACE
 logLevel: LOG_ERROR
-#logLevel: LOG_INFO
-#logLevel: LOG_WARNING
-#logLevel: LOG_DEBUG
 
-###
-### Network configuration
-###
-restIp: 0.0.0.0
+# Hostname of the coordinator. Passed to the internal worker, so it can connect over the local network.
 coordinatorHost: coordinator
 
+# IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
+restIp: 0.0.0.0
+
+# TODO Delete this field?
 worker:
   localWorkerHost: coordinator
 
-###
-### Logical source configuration
-###
+# Enable merging of operators from multiple queries in the global query plan.
+# - DefaultQueryMergerRule: No query merging
+# - HashSignatureBasedPartialQueryMergerRule: Syntactic query merging
+# - Z3SignatureBasedPartialQueryMergerBottomUpRule: Semantic query merging
+optimizer:
+  queryMergerRule: "DefaultQueryMergerRule"
 logicalSources:
   - logicalSourceName: "mqtt-source"
     fields:
