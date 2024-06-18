@@ -13,6 +13,7 @@ physicalSources:
   - logicalSourceName: consumers
     physicalSourceName: consumers
     type: MQTT_SOURCE
+    # TODO document and clean up
     configuration:
       # The client ID under which the source connects to the MQTT broker.
       # Needs to be unique for each source to avoid frequent disconnections and possible query failures.
