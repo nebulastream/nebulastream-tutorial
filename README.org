@@ -1,6 +1,6 @@
 * Description
 
-The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to and and visualize their results.
+The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to NebulaStream, and visualize their results.
 
 * IoTropolis -- the NebulaStream smart city
 
@@ -132,7 +132,7 @@ The coordinator and the worker also mount the folder =resources/config/nebulastr
 
 A minimal NebulaStream configuration must configure network options, as well as logical and physical sources.
 Logical sources specify the data schema and are part of the coordinator configuration.
-Physical sources specify how data is obtained and are part of the configuration of a worker.
+Physical sources specify how data is obtained and are part of the worker configuration.
 
 ** Coordinator configuration
 :PROPERTIES:
@@ -179,7 +179,7 @@ worker:
 
 *** Logical sources
 
-A logical source represents an stream of input tuples, possibly from muliple sensors, that share common characteristics. A logical has two properties:
+Next, we configure the logical sources that are known to the coordinator. A logical source represents an stream of input tuples, possibly from multiple sensors, that share common characteristics. A logical has two properties:
 
 - =logicalSourceName=: A unique identifier of the logical source.
 - =fields=: The schema of the logical source, an unordered list of named and typed attribute.
@@ -192,7 +192,7 @@ NebulaStream supports the following data types:
 - Booleans: =BOOLEAN=
 - Variable-sized strings: =TEXT=
 
-In the tutorial there are three logical sources: =windTurbines=, =solarPanels=, and =consumers=. The sources =windTurbines= and =solarPanels= have the same schema.
+In the tutorial, there are three logical sources: =windTurbines=, =solarPanels=, and =consumers=. The sources =windTurbines= and =solarPanels= have the same schema.
 
 #+begin_src yaml
 logicalSources:
@@ -271,9 +271,14 @@ localWorkerHost: consumers-worker
 
 *** Physical sources
 
-A physical source connects to a concrete data source. Each physical source is associated with a specific logical source. The tuples provided by the data source have to match the schema of the logical source. Multiple physical sources can be associated with a single logical source, even across multiple NebulaStream workers. 
+Next, we specify the physical data sources that are connected to the worker.
+A physical source connects to a concrete data source.
+Each physical source is associated with a specific logical source.
+The tuples provided by the data source have to match the schema of the logical source.
+Multiple physical sources can be associated with a single logical source, even across multiple NebulaStream workers. 
 
-NebulaStream supports reading data from CSV files or from popular message brokers, such es MQTT, Kafka, or OPC, as data sources. In this tutorial, we use an MQTT broker as the data source for all physical sources.
+NebulaStream supports reading data from CSV files or from popular message brokers, such es MQTT, Kafka, or OPC, as data sources.
+In this tutorial, we use an MQTT broker as the data source for all physical sources.
 
 A physical source is configured with the following options:
 
@@ -325,6 +330,10 @@ With Docker containers running, we can already visualize the generated input dat
 
    TODO animation showing dashboards
 
+   *Note:* This display can be quite slow because Grafana is displaying every message received over MQTT which are about TODO: how many messages?
+   Later we will use window aggregations to reduce this data load.
+   To reduce the CPU load, collapse the top Data sources row in Grafana or click the green dot of the panels to stop streaming.
+
    *Note:* When Grafana is started for the first time, the MQTT datasource is not yet configured.
    This is indicated by the error triangles on red background in the dashboard.
    Go to TODO, click on the datasource TODO, and enter =ws://mosquitto:9001= in the URI field.
@@ -345,9 +354,44 @@ The NebulaStream web UI can be accessed at [[http://localhost:9000][http://local
 - Source catalog: Display information about the defined physical sources.
 - Settings: Configure how the coordinator can be configured over the network.
 
-** Query catalog
+** The query catalog
 
+The query catalog shows the queries that are known in the system and their status. For example, a query can be in the status =OPTIMIZING=, =RUNNING=, =STOPPED=, or =FAILED=.
 
+We can also submit new queries through the query catalog.
+
+Operations with query catalog are described in more details in the following sections. TODO link sections, running queries, also query merging?
+
+TODO Screenshot?
+
+** The topology screen
+
+The topology screen visualizes the topology of the NebulaStream workers.
+We have defined three workers in the [[id:EE9DC662-28B7-4259-A49A-6ACB7C533D3C][Docker Compose configuration]] to which we have attached physical sources.
+These are the nodes 2-4.
+There is a fourth worker, node 1, which is automatically created by the coordinator.
+
+By default, when I worker registers itself with the coordinator, it will register as a child of the worker created by the coordinator.
+It is also possible to make hierarchical topologies with intermediate workers using the REST API.
+
+Further information: [[https://docs.nebula.stream/docs/clients/rest-api/#topology][NebulaStream documentation: Topology REST API]].
+
+TODO: Screenshot
+
+** The source catalog
+
+The source catalog shows information about the logical sources known to the coordinator, i.e., the schema and the connected physical sources.
+We can also see on which node a physical source resides.
+
+TODO Screenshot
+
+** The settings screen
+
+On the settings screen, we can configure the hostname and port of the NebulaStream coordinator to which we want to connect with the UI.
+Since the coordinator Docker service is accessible on the host machine, the default values =localhost= and =8081= should work.
+You can verify the connection by clicking on "Save changes", after which a message "Connected to NebulaStream!" should appear.
+
+TODO Screenshot
 
 * Running NebulaStream queries
 
@@ -358,4 +402,53 @@ The NebulaStream web UI can be accessed at [[http://localhost:9000][http://local
 - Window-based joins of multiple logical sources.
 - Java UDFs with Map and FlatMap semantics.
 - TensorFlow Lite UDFs. TODO Not shown? Link to Java client example?
+- Complex event processing operaitons. TODO Not shown. Link to documentation?
 
+** Query 1: Combine solar panels and wind turbines energy producers
+
+In our smart city, there are two energy producers, wind turbines and solar panels, which are modeled as separate sources.
+To compute difference between produced and consumed energy, we first have to combine both energy producers, which we can do with the =unionWith= operator.
+=unionWith= requires that both logical sources have the same schema.
+
+The full query looks like this:
+
+#+begin_src c++
+/* Create a query from the windTurbines source. */
+Query::from("windTurbines")
+      /* Combine with the tuples from the solarPanels source. */
+      .unionWith(Query::from("solarPanels"))
+      /* Send to a MQTT sink with topic q1-results. */
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", /* The MQTT broker URL */
+                                       "q1-results", /* The MQTT topic */
+                                       "user", /* The user with which to connect to the MQTT broker */
+                                       100, /* Maximum number of buffered messages */
+                                       MQTTSinkDescriptor::TimeUnits::milliseconds, 0, /* Delay before sending messages to the broker */
+                                       MQTTSinkDescriptor::ServiceQualities::atMostOnce, /* MQTT QoS */
+                                       true /* Connect asynchronously */
+                                       ));
+#+end_src
+
+This query contains three operators: =Query::from=, =unionWith=, and =sink=.
+
+- =Query::from= creates a stream from a logical source.
+  The argument is the name of the logical source defined on the coordinator, i.e., =windTurbines=.
+- =unionWith= combines the tuples from the current stream with another stream.
+  As the argument, we create another stream with =Query::from=, which reads from the =solarPanels= logical source.
+- =sink= sends the output stream to the MQTT broker under the topic =q1-results=.
+
+To run the query, we open the query catalog of the NebulaStream web UI at [[http://localhost:9000/querycatalog][http://localhost:9000/querycatalog]].
+Then we click on the =Add Query= button, paste the query into the text box, and click submit.
+After a moment, the query will show up as =OPTIMIZING= and later as =RUNNING= in the list below the text box.
+
+TODO Animation
+
+The query produces tuples which look like this:
+
+#+begin_src json
+{"windTurbines$groupId":3,"windTurbines$producedPower":428,"windTurbines$producerId":8,"windTurbines$timestamp":1719756000981}
+{"windTurbines$groupId":3,"windTurbines$producedPower":518,"windTurbines$producerId":9,"windTurbines$timestamp":1719756000981}
+{"windTurbines$groupId":3,"windTurbines$producedPower":547,"windTurbines$producerId":10,"windTurbines$timestamp":1719756000981}
+{"windTurbines$groupId":3,"windTurbines$producedPower":526,"windTurbines$producerId":11,"windTurbines$timestamp":1719756000981}
+#+end_src
+
+The name of each field is now prefixed with the name of the first logical source, i.e., =windTurbines=, followed by the schema name separator =$=.
