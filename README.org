@@ -47,7 +47,7 @@ The [[file:docker-compose.yml][docker-compose.yml]] file configures and starts t
   This image contains the binaries for both the NebulaStream coordinator and the NebulaStream worker, so we specify a custom entry point to run the coordinator.
   We also specify a configuration file for the coordinator, which is explained in the section [[#coordinator-configuration][Coordinator configuration]].
 
-  #+begin_src yaml
+#+begin_src yaml
 coordinator:
   image: nebulastream/nes-executable-image:latest
   entrypoint: "nesCoordinator --configPath=/tutorial/coordinator.yaml"
