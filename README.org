@@ -47,7 +47,7 @@ The [[file:docker-compose.yml][docker-compose.yml]] file configures and starts t
   This image contains the binaries for both the NebulaStream coordinator and the NebulaStream worker, so we specify a custom entry point to run the coordinator.
   We also specify a configuration file for the coordinator, which is explained in the section [[#coordinator-configuration][Coordinator configuration]].
 
-#+begin_src yaml
+  #+begin_src yaml
 coordinator:
   image: nebulastream/nes-executable-image:latest
   entrypoint: "nesCoordinator --configPath=/tutorial/coordinator.yaml"
@@ -314,11 +314,11 @@ Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configur
 
 With Docker containers running, we can already visualize the generated input data in Grafana:
 
-1. Open the 3D visualization at http://localhost:9003 to start the data generator.
+1. Open the 3D visualization at [[http://localhost:9003][http://localhost:9003]] to start the data generator.
 
    *Note:* This window must remain visible, otherwise data generation stops.
 
-2. Open Grafana at http://localhost:3000.
+2. Open Grafana at [[http://localhost:3000][http://localhost:3000]].
    Grafana should open with the NebulaStream dashboard.
    The panels in the top row visualize the generated data, which is published on the MQTT topics =windturbines=, =solarpanels=, and =consumers=.
    The panels in the rows below are empty because there is no streaming query running yet in NebulaStream.
@@ -338,7 +338,7 @@ We can submit queries to NebulaStream using the web UI, which we describe next.
 
 * The NebulaStream web UI
 
-The NebulaStream web UI can be accessed at http://localhost:9000. It provides the following functionality:
+The NebulaStream web UI can be accessed at [[http://localhost:9000][http://localhost:9000]]. It provides the following functionality:
 
 - Query catalog: Submit queries and monitor their status.
 - Topology: Visualize the hierarchical network topology of the workers.
