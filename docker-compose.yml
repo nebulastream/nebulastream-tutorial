@@ -71,10 +71,6 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
-    environment:
-      # Install the MQTT datasource plugin
-      # https://grafana.com/grafana/plugins/grafana-mqtt-datasource/
-      - GF_INSTALL_PLUGINS=grafana-mqtt-datasource
     volumes:
       # Provide a docker volume to persist changes to the Grafana configuration.
       - grafana-storage:/var/lib/grafana
