@@ -17,58 +17,59 @@ worker:
 # - Z3SignatureBasedPartialQueryMergerBottomUpRule: Semantic query merging
 optimizer:
   queryMergerRule: "DefaultQueryMergerRule"
+
+# Configure logical sources.
+# - logicalSourceName: Each logical source is identified by a unique name.
+# - fields: A source has a schema, an unordered list of named and typed attributes.
+# Valid types are:
+# - INT8, INT16, INT32, INT64
+# - UINT8, UINT16, UINT32, UINT64
+# - FLOAT32, FLOAT64
+# - BOOLEAN
+# - TEXT
 logicalSources:
-  - logicalSourceName: "mqtt-source"
-    fields:
-      - name: "intField"
-        type: "INT32"
-      - name: "booleanField"
-        type: "BOOLEAN"
-      - name: "textField"
-        type: "TEXT"
-  - logicalSourceName: "iris"
-    fields:
-      - name: "id"
-        type: "UINT64"
-      - name: "f1"
-        type: "FLOAT32"
-      - name: "f2"
-        type: "FLOAT32"
-      - name: "f3"
-        type: "FLOAT32"
-      - name: "f4"
-        type: "FLOAT32"
-      - name: "target"
-        type: "UINT64"
+  # windTurbines and solarPanels have the same schema
   - logicalSourceName: "windTurbines"
     fields:
-      - name: cityId
-        type: INT8
+      # Each wind turbine is uniquely identified.
       - name: producerId
         type: INT8
+      # Multiple wind turbines are grouped together.
+      # The panels in the 3D UI show power usage per group.
+      - name: groupId
+        type: INT8
+      # The power currently produced by a wind turbine in kWh.
       - name: producedPower
-        type: FLOAT32
+        type: INT32
+      # The timestamp of the message.
+      # Timestamps have to be UINT64 fields.
       - name: timestamp
         type: UINT64
+  # windTurbines and solarPanels have the same schema.
   - logicalSourceName: "solarPanels"
     fields:
-      - name: cityId
-        type: INT8
       - name: producerId
         type: INT8
+      - name: groupId
+        type: INT8
       - name: producedPower
-        type: FLOAT32
+        type: INT32
       - name: timestamp
         type: UINT64
   - logicalSourceName: "consumers"
     fields:
-      - name: cityId
-        type: INT8
-      - name: sectorId
-        type: INT8
+      # Each consumer is uniquely identified.
       - name: consumerId
         type: INT8
+      # TODO Remove?
+      - name: sectorId
+        type: INT8
+      # The power currently consumed in kWh.
       - name: consumedPower
-        type: FLOAT32
+        type: INT32
+      # The type of consumer: values are households, offices, factories, streetlights.
+      - name: consumerType
+        type: TEXT
+      # The timestamp of the message.
       - name: timestamp
         type: UINT64
