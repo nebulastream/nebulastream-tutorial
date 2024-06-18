@@ -21,7 +21,7 @@ physicalSources:
       userName: consumers
       url: ws://mosquitto:9001
       topic: consumers
-      qos: 2
+      qos: 0
       inputFormat: JSON
       cleanSession: true
       flushIntervalMS: 10
