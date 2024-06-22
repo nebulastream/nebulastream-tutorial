@@ -12,13 +12,6 @@ restIp: 0.0.0.0
 worker:
   localWorkerHost: coordinator
 
-# Enable merging of operators from multiple queries in the global query plan.
-# - DefaultQueryMergerRule: No query merging
-# - HashSignatureBasedPartialQueryMergerRule: Syntactic query merging
-# - Z3SignatureBasedPartialQueryMergerBottomUpRule: Semantic query merging
-optimizer:
-  queryMergerRule: "DefaultQueryMergerRule"
-
 # Configure logical sources.
 # - logicalSourceName: Each logical source is identified by a unique name.
 # - fields: A source has a schema, an unordered list of named and typed attributes.
@@ -62,7 +55,6 @@ logicalSources:
       # Each consumer is uniquely identified.
       - name: consumerId
         type: INT8
-      # TODO Remove?
       - name: sectorId
         type: INT8
       # The power currently consumed in kWh.
@@ -74,3 +66,12 @@ logicalSources:
       # The timestamp of the message.
       - name: timestamp
         type: UINT64
+
+# Enable merging of operators from multiple queries in the global query plan.
+# - DefaultQueryMergerRule: No query merging
+# - HashSignatureBasedPartialQueryMergerRule: Syntactic query merging
+# - Z3SignatureBasedCompleteQueryMergerRule: Semantic query merging
+optimizer:
+  queryMergerRule: "DefaultQueryMergerRule"
+
+
