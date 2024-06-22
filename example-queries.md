@@ -69,7 +69,7 @@ Query::from("consumers")
 
 # Query 5: Combine multiple data sources
 
-Use `union` to combine tuples from `windTurbines` and `solarPanels` logical sources.
+Use `unionWith` to combine tuples from `windTurbines` and `solarPanels` logical sources.
 
 ````c++
 Query::from("windTurbines")
@@ -144,6 +144,8 @@ Query::from("solarPanels")
 
 # Query 9: Window join
 
+TODO Document
+
 ```c++
 Query::from("windTurbines")
       /* Combine both wind turbine and solar panel producers. */
@@ -161,8 +163,8 @@ Query::from("windTurbines")
                       .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
                       .apply(Sum(Attribute("consumedPower")))
                       .map(Attribute("JoinKey") = 1))
-                      .where(Attribute("JoinKey") == Attribute("JoinKey"))
-                      .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
+      .where(Attribute("JoinKey") == Attribute("JoinKey"))
+      .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
                       
        /* Compute the difference between produced and consumed power. */
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
