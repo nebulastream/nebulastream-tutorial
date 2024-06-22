@@ -34,9 +34,6 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
  *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
  * </pre>
- *
- * The program prints the status of the submitted query for 10 seconds.
- * The program does not stop the query.
  */
 public class Query9 {
 
@@ -50,18 +47,11 @@ public class Query9 {
         // TODO https://github.com/nebulastream/nebulastream-java-client/pull/315
 
         // Finish the query with a sink.
-        Sink sink = query.sink(new MQTTSink("ws://mosquitto:9001", "q9-results", "user", 1000,
+        query.sink(new MQTTSink("ws://mosquitto:9001", "q9-results", "user", 1000,
                 MQTTSink.TimeUnits.milliseconds, 0, MQTTSink.ServiceQualities.atLeastOnce, true));
 
         // Submit the query to the coordinator.
-        int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
-
-        // Print the status of the query to the console for 10 seconds.
-        for (int i = 0; i < 10; ++i) {
-            String status = nebulaStreamRuntime.getQueryStatus(queryId);
-            System.out.printf("Query id: %d, status: %s\n", queryId, status);
-            Thread.sleep(1000);
-        }
+        nebulaStreamRuntime.executeQuery(query, "BottomUp");
     }
 
 }

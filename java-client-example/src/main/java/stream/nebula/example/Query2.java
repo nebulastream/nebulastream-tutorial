@@ -20,8 +20,6 @@ import static stream.nebula.expression.Expressions.attribute;
  *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
  *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
  * </pre>
- *
- * The program prints the status of the submitted query for 10 seconds and then stops the query.
  */
 public class Query2 {
 
@@ -42,16 +40,5 @@ public class Query2 {
 
         // Submit the query to the coordinator.
         int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
-
-        // Print the status of the query to the console for 10 seconds.
-        for (int i = 0; i < 10; ++i) {
-            String status = nebulaStreamRuntime.getQueryStatus(queryId);
-            System.out.printf("Query id: %d, status: %s\n", queryId, status);
-            Thread.sleep(1000);
-        }
-
-        // Stop the query
-        nebulaStreamRuntime.stopQuery(queryId);
     }
-
 }
