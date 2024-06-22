@@ -2,7 +2,9 @@
 
 The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to NebulaStream, and visualize their results.
 
-* IoTropolis -- the NebulaStream smart city
+TODO table of contents?
+
+* IoTropolis -- The NebulaStream smart city
 
 The tutorial is based on a smart city scenario, the NebulaStream IoTropolis.
 In this smart city, wind turbines and solar panels /produce/ energy, whereas households, offices, factories, and street lights /consume/ energy.
@@ -24,8 +26,8 @@ The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compo
 
 #+begin_src sh
 git clone https://github.com/nebulastream/nebulastream-tutorial
-git checkout debs-2024-tutorial
 cd nebulastream-tutorial
+git checkout debs-2024-tutorial
 docker compose pull
 docker compose up --build
 #+end_src
@@ -315,6 +317,14 @@ physicalSources:
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#physical-sources-configuration][NebulaStream documentation: Physical Sources Configuration]]
 
+*** Topology of logical and physical sources
+
+TODO Describe different combinations
+
+#+CAPTION: Topology of logical and physical sources
+#+ATTR_HTML: :width 800
+[[[[file:doc/topology-of-logical-and-physical-sources.png]]
+
 * Visualizing the input data
 
 With Docker containers running, we can already visualize the generated input data in Grafana:
@@ -395,52 +405,153 @@ TODO Screenshot
 
 * Running NebulaStream queries
 
- NebulaStream supports queries with the following operators:
+NebulaStream supports queries with the following operators:
 
 - Basic ETL operations, e.g., =filter=, =map=, =project= and =union=.
 - Window aggregations. TODO Are sliding windows supported?
 - Window-based joins of multiple logical sources.
 - Java UDFs with Map and FlatMap semantics.
 - TensorFlow Lite UDFs. TODO Not shown? Link to Java client example?
-- Complex event processing operaitons. TODO Not shown. Link to documentation?
+- Complex event processing operations. TODO Not shown. Link to documentation?
 
-** Query 1: Combine solar panels and wind turbines energy producers
+Further information: [[https://docs.nebula.stream/docs/query-api/][NebulaStream documentation: Query API]]
 
-In our smart city, there are two energy producers, wind turbines and solar panels, which are modeled as separate sources.
-To compute difference between produced and consumed energy, we first have to combine both energy producers, which we can do with the =unionWith= operator.
-=unionWith= requires that both logical sources have the same schema.
+** Query sources and sinks
 
-The full query looks like this:
+Queries are started with the =from= operator, which reads tuples from
+a logical source, and finished with a =sink= operator, which specifies the
+sink that receives the result stream.
+NebulaStream supports files as sinks, as well as MQTT, Kafka, or OPC
+message brokers.
+In the UI, we specify queries as C++ code fragments.
+A minimal query, which just copies the tuples from a logical source
+to an output sink, looks like this:
 
 #+begin_src c++
-/* Create a query from the windTurbines source. */
-Query::from("windTurbines")
-      /* Combine with the tuples from the solarPanels source. */
-      .unionWith(Query::from("solarPanels"))
-      /* Send to a MQTT sink with topic q1-results. */
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", /* The MQTT broker URL */
-                                       "q1-results", /* The MQTT topic */
-                                       "user", /* The user with which to connect to the MQTT broker */
-                                       100, /* Maximum number of buffered messages */
-                                       MQTTSinkDescriptor::TimeUnits::milliseconds, 0, /* Delay before sending messages to the broker */
-                                       MQTTSinkDescriptor::ServiceQualities::atMostOnce, /* MQTT QoS */
-                                       true /* Connect asynchronously */
-                                       ));
+/* Start a new query by reading from the consumers logical source */
+Query::from("consumers")
+
+      /* Finish the query by sending tuples to an MQTT sink. */
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "consumers-copy",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
 #+end_src
 
-This query contains three operators: =Query::from=, =unionWith=, and =sink=.
-
-- =Query::from= creates a stream from a logical source.
-  The argument is the name of the logical source defined on the coordinator, i.e., =windTurbines=.
-- =unionWith= combines the tuples from the current stream with another stream.
-  As the argument, we create another stream with =Query::from=, which reads from the =solarPanels= logical source.
-- =sink= sends the output stream to the MQTT broker under the topic =q1-results=.
+** Running queries
 
 To run the query, we open the query catalog of the NebulaStream web UI at [[http://localhost:9000/querycatalog][http://localhost:9000/querycatalog]].
 Then we click on the =Add Query= button, paste the query into the text box, and click submit.
 After a moment, the query will show up as =OPTIMIZING= and later as =RUNNING= in the list below the text box.
 
-TODO Animation
+TODO Animation, Visualization in Graphana
+
+When the query is running, the result tuples are shown in the Grafana panel =Q0: Copying source to sink=. Note that the 3D visualization must be running to produce the input data for the query.
+
+The query produces tuples which look like this:
+
+TODO Output
+
+The name of each field is now prefixed with the name of the logical source, i.e., =consumers=, followed by the schema name separator =$=.
+
+* Example queries
+:PROPERTIES:
+:CUSTOM_ID: example-queries
+:END:
+
+** Query 1: Filter tuples
+
+Query 1 uses the =filter= operator to filter the tuples of the =consumers= logical source where the value of the attribute =consumedPower= is greater than 10000.
+
+#+begin_src c++
+Query::from("consumers")      
+      .filter(Attribute("consumedPower") > 10000) 
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "q1-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+#+end_src
+
+TODO Output
+
+When we run this query in the UI, the filtered tuples are shown in the Grafana panel =Q1: Filter tuples=.
+
+TODO screenshot
+
+** Query 2: Filter over multiple attributes
+
+We can also filter over multiple attributes, by combining the predicates with =&&=:
+
+#+begin_src c++
+#+begin_example
+Query::from("consumers")      
+      .filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1) 
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "q2-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+#+end_example
+#+end_src
+
+TODO Output
+
+The result tuples are shown in the Grafana panel =Q2: Filter over multiple attributes=.
+
+** Query 3: Filter with complex expressions
+
+In general, the =filter= operator evaluates a complex expression consisting of =Attribute("name")= terms, boolean operators (=&&= and =||=) and arithmetic operations, and arithmetic functions:
+
+The following query contains these building blocks:
+
+#+begin_src c++
+Query::from("consumers")      
+      .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1 &&
+              MOD(Attribute("sectorId"), 2) == 0) 
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "q3-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+
+#+end_src
+
+TODO Output
+
+The result tuples are shown in the Grafana panel =Q3: Filter with complex expressions=.
+
+Further information: [[https://docs.nebula.stream/docs/query-api/expressions/][NebulaStream documentation: Expressions]].
+
+** Query 4: Transform data
+
+The =map= operator assigns the result of a (complex) expression to an attribute.
+Similarly to the filter operator, the expression can consist of =Attribute("name")= terms, boolean operators (=&&= and =||=) and arithmetic operations, and arithmetic functions.
+If the specified attribute already exists in the tuple, its contents are overwritten.
+Otherwise, the schema of the tuple is extended to contain the new attribute.
+
+The following query, overwrites the value of the attribute =consumedPower= with the result of dividing it by 1000.
+
+#+begin_src c++
+Query::from("consumers")
+       .map(Attribute("consumedPower") = Attribute("consumedPower") / 1000)
+       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                        "q4-results",
+                                        "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+#+end_src
+
+TODO Output
+
+The result tuples are shown in the Grafana panel =Q4: Transform data with map=.
+
+Further information: [[https://docs.nebula.stream/docs/query-api/expressions/][NebulaStream documentation: Expressions]].
+
+** Query 5: Union of multiple queries
+
+The =unionWith= operator combines the tuples from two queries into a single query.
+Both queries must produce tuples with the same query.
+The following query combines the tuples from the =windTurbines= and =solarPanels= logical source
+
+#+begin_src c++
+Query::from("windTurbines")
+      .unionWith(Query::from("solarPanels"))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "q5-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+#+end_src
 
 The query produces tuples which look like this:
 
@@ -451,4 +562,392 @@ The query produces tuples which look like this:
 {"windTurbines$groupId":3,"windTurbines$producedPower":526,"windTurbines$producerId":11,"windTurbines$timestamp":1719756000981}
 #+end_src
 
-The name of each field is now prefixed with the name of the first logical source, i.e., =windTurbines=, followed by the schema name separator =$=.
+The schema portion of the result tuples is taken from the logical source of the first query, i.e., =windTurbines=.
+
+The result tuples are shown in the Grafana panel =Q5: Union of multiple queries=. 
+
+** Query 6: Enrich tuples with data
+
+In the output of query 5, we cannot distinguish the original source of the tuples.
+We can use =map= to enrich the data with additional source attribute before combining them.
+The =map= operator is applied to both input queries of the =unionWith= operator.
+
+#+begin_src c++
+Query::from("windTurbines")      
+      .map(Attribute("source") = 1)
+      .unionWith(Query::from("solarPanels")
+                       .map(Attribute("source") = 2))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
+                                       "q6-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+#+end_src
+
+The query produces tuples which look like this:
+
+#+begin_src json
+{"windTurbines$source":1,"windTurbines$groupId":3,"windTurbines$producedPower":190,"windTurbines$producerId":14,"windTurbines$timestamp":1719939060981}
+{"windTurbines$source":1,"windTurbines$groupId":3,"windTurbines$producedPower":190,"windTurbines$producerId":15,"windTurbines$timestamp":1719939060981}
+{"windTurbines$source":2,"windTurbines$groupId":0,"windTurbines$producedPower":0,"windTurbines$producerId":0,"windTurbines$timestamp":1719095940092}
+{"windTurbines$source":2,"windTurbines$groupId":0,"windTurbines$producedPower":0,"windTurbines$producerId":5,"windTurbines$timestamp":1719095940092}
+#+end_src
+
+The result tuples are shown in the Grafana panel =Q6: Enrich tuples with map=. 
+
+** Query 7: Window aggregations with tumbling windows
+
+The =window= operator slices the tuple stream into discrete windows and then computes one or more aggregates of the tuples stream.
+The aggregations can optionally be grouped by one or more key attributes.
+NebulaStream supports time-based tumbling windows and sliding windows, where the time information is taken from a stream attribute, as well as data-based threshold windows.
+
+The following query uses a tumbling window of size 1 hour to compute the total produced energy for each group of solar panels.
+The time information is taken from the attribute =timestamp= of the =solarPanels= logical source.
+
+#+begin_src c++
+Query::from("solarPanels")
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+      .byKey(Attribute("groupId"))
+      .apply(Sum(Attribute("producedPower")))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q7-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+
+#+end_src
+
+The query produces tuples which look like this:
+
+TODO Output
+
+The result of the query is visualized in the Grafana panel =Q7: Tumbling windows=.
+There are four groups of solar panels, which are represented by different colors.
+Note that the 3D visualization must be visible on the screen, so that time advances in the data generator.
+
+TODO Output visualization
+
+** Query 8: Window aggregations with sliding windows
+
+Query 7 is updated every hour (in the time of the 3D visualization).
+To update the data more frequently, we can use the sliding window, such as in the following query uses a sliding window of size 1 hour and slide 10 minutes:
+
+#+begin_src c++
+Query::from("solarPanels")
+      .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
+      .byKey(Attribute("groupId"))
+      .apply(Sum(Attribute("producedPower")))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q8-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+The result of the query is visualized in the Grafana panel =Q8: Sliding windows=.
+
+TODO Animation
+
+** Query 9: Join query
+
+The =joinWith= operator performs a window-based join of two input queries.
+
+The following query computes the difference between produced power and consumed power in each hour.
+In addition to =joinWith=, it also uses the =unionWith=, =window=, and =map= operators.
+
+- First, we combine the =windTurbines= and =solarPanels= logical sources to create a stream of tuples containing all energy producers.
+- Then we apply a sliding window of size 1 hour and slide 10 minutes to compute the sum of produced energy.
+  This operator produces a single tuple representing the total energy output every 10 minutes.
+- We apply a similar sliding window to the =consumers= logical source.
+- Finally, we join both the producers stream and the consumers stream.
+  We use the same sliding window definition as in the input streams, using the attribute =start= of the input streams.
+  This ensures that only one tuple is contained in each the windows of the input streams.
+  We therefore use a join expression that evaluates to true to join them.
+- Finally, we use =map= to compute the difference of the produced and consumed power and assign it to a new attribute =DifferenceProducedConsumedPower=.
+
+#+begin_src c++
+Query::from("windTurbines")
+      .unionWith(Query::from("solarPanels"))
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+      .apply(Sum(Attribute("producedPower")))
+      .map(Attribute("JoinKey") = 1)
+      .joinWith(Query::from("consumers")
+                      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+                      .apply(Sum(Attribute("consumedPower")))
+                      .map(Attribute("JoinKey") = 1))
+      .where(Attribute("JoinKey") == Attribute("JoinKey"))
+      .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
+      .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q9-results",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+The query produces tuples which look like this:
+
+TODO Output
+
+The result of the query is visualized in the Grafana panel =Q9: Join=. Note that the 3D visualization must be visible on the screen, so that time advances in the data generator.
+
+TODO Describe colors
+
+TODO Animation
+* Actuating events in the 3D smart city
+
+We now have everything we need to construct an end-to-end query pipeline, which takes the data generated form the smart city, performs a computation on it with NebulaStream, and produces an output stream, which triggers an event in the smart city.
+
+** Displaying energy produced by solar panels and wind turbines
+
+The first actuation query uses the query Q8 to display the amount of produced power on labels next to the solar panels and wind turbines in the smart city.
+To do so, we adapt the query to send the result tuples to the MQTT topics =solarPanelDashboards= and =windTurbineDashboards=, respectively:
+
+#+begin_src c++
+Query::from("solarPanels")
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+      .byKey(Attribute("groupId"))
+      .apply(Sum(Attribute("producedPower")))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","solarPanelDashboards",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+#+begin_src c++
+Query::from("windTurbine")
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+      .byKey(Attribute("groupId"))
+      .apply(Sum(Attribute("producedPower")))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","windTurbineDashboards",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+TODO Animation
+
+** Turning street lights on and off at night depending on available wind speed
+
+The second actuation query uses query Q9 to trigger changes in the street lights at night.
+Because the sun is not shining, all of the available energy is produced by the wind turbines.
+If wind speed is low, and the difference between produced and consumed energy is too small, a progressively larger number of street lights are turned off.
+To trigger these changes, we adapt the query Q9 to send the result tuples to the MQTT topic =differenceProducedConsumedPower=.
+
+#+begin_src c++
+Query::from("windTurbines")
+      .unionWith(Query::from("solarPanels"))
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+      .apply(Sum(Attribute("producedPower")))
+      .map(Attribute("JoinKey") = 1)
+      .joinWith(Query::from("consumers")
+                      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+                      .apply(Sum(Attribute("consumedPower")))
+                      .map(Attribute("JoinKey") = 1))
+      .where(Attribute("JoinKey") == Attribute("JoinKey"))
+      .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
+      .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "differenceProducedConsumedPower",
+                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+We can control the wind speed using the control panel in the 3D visualization.
+It is also possible to reduce the rendering speed of the 3D visualization.
+
+TODO Animation
+
+* The Java client
+
+So far, we have used the web UI to interact with NebulaStream.
+In the background, the web UI communicates with the NebulaStream coordinator using a REST API.
+We can also use other clients to interact with NebulaStream.
+The Java client is the most fully-featured NebulaStream client.
+
+Further information:
+
+- [[https://docs.nebula.stream/docs/clients/rest-api/][NebulaStream documentation: REST API]]
+- [[https://docs.nebula.stream/docs/clients/java-client/][NebulaStream documentation: Java Client]]
+
+** Runtime API
+
+The Java client uses an instance of the =NebulaStreamRuntime= object to encapsulate a connection to a NebulaStream coordinator:
+
+#+begin_src java
+NebulaStreamRuntime nebulaStreamRuntime = NebulaStreamRuntime.getRuntime("localhost", 8081);
+#+end_src
+
+The =NebulaStreamRuntime= instance provides methods to interact with NebulaStream.
+The most important methods are:
+
+- =readFromSource=: Create a query by reading tuples from a logical source, similarly to =Query::from= in the C++ syntax used in the web UI.
+- =executeQuery=: Submit a query to the coordinator.
+- =getQueryStatus=: Retrieve the status of a query.
+- =stopQuery=: Stop a query.
+
+Below is an example of how to create, run, and stop the query Q1 in the Java client:
+
+#+begin_src java
+// Create a NebulaStream runtime and connect it to the NebulaStream coordinator.
+NebulaStreamRuntime nebulaStreamRuntime = NebulaStreamRuntime.getRuntime("localhost", 8081);
+
+// Process only those tuples from the `consumers` logical source where `consumedPower` is greater than 10000.
+Query query = nebulaStreamRuntime.readFromSource("consumers")
+    .filter(attribute("consumedPower").greaterThan(10000));
+
+// Finish the query with a sink.
+query.sink(new MQTTSink("ws://mosquitto:9001", "q1-results", "user", 1000,
+                        MQTTSink.TimeUnits.milliseconds, 0, MQTTSink.ServiceQualities.atLeastOnce, true));
+
+// Submit the query to the coordinator.
+int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
+
+// Wait until the query status changes to running
+for (String status = null;
+     !Objects.equals(status, "RUNNING");
+     status = nebulaStreamRuntime.getQueryStatus(queryId)) {
+    System.out.printf("Query id: %d, status: %s\n", queryId, status);
+    Thread.sleep(1000);
+};
+
+// Let the query run for 10 seconds
+for (int i = 0; i < 10; ++i) {
+    String status = nebulaStreamRuntime.getQueryStatus(queryId);
+    System.out.printf("Query id: %d, status: %s\n", queryId, status);
+    Thread.sleep(1000);
+}
+
+// Stop the query
+nebulaStreamRuntime.stopQuery(queryId);
+
+// Wait until the query has stopped
+for (String status = null;
+     !Objects.equals(status, "STOPPED");
+     status = nebulaStreamRuntime.getQueryStatus(queryId)) {
+    System.out.printf("Query id: %d, status: %s\n", queryId, status);
+    Thread.sleep(1000);
+};
+#+end_src
+
+** Query API
+
+In Java, we cannot use overloaded operators to form complex expression as we do in the C++ syntax.
+Instead, we use a fluid syntax to chain operators.
+
+*** Fluid syntax examples
+
+For example, query Q1 contains the following expression:
+
+#+begin_src c++
+Attribute("producedPower") < 10000
+#+end_src
+
+In the Java client, we formulate this expression as follows:
+
+#+begin_src java
+attribute("producedPower").lessThan(1000)
+#+end_src
+
+In general, an operation =LHS op RHS= in C++ syntax is converted to =LHS.opMethod(RHS)= in Java syntax.
+
+Expressions starting with numbers or boolean literals must wrap the left hand side in a =literal= method.
+For example, =1 + 2= in C++ syntax becomes =literal(1).add(2)= in Java.
+
+*** Breaking up queries
+
+The fluid query API of the Java client allows us to break up complex queries into smaller components.
+
+The following is literal translation of query Q9 in Java.
+
+TODO Query
+
+Instead of writing it as one big statement, we can also break it up as follows:
+
+TODO Query
+
+** Query examples
+
+The repository contains Java versions of the previous [[#example-queries][Example queries]] in the folder =java-client-example=.
+These can be run individually from an IDE or all queries at once, using =./gradlew run=.
+Query Q1 stops after running for 10 seconds to demonstrate the runtime API of the =NebulaStreamRuntime= object.
+The other queries have to be stopped manually.
+
+TODO Class to run all queries
+
+** Java UDFs
+
+TODO Java UDFs
+
+* Query merging
+
+Query merging is an important feature of NebulaStream which aims to reduce redundant computation and data transfers in multi-user environment.
+We demonstrate query merging with the following queries:
+
+Query 1: Filter before map
+
+#+begin_src c++
+Query::from("windTurbines")
+.filter(Attribute("producedPower") < 80000)
+.map(Attribute("producedPower") = Attribute("producedPower") / 1000)
+.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q1", "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+
+Query 2: Map before filter
+
+#+begin_src c++
+Query::from("windTurbines")
+.map(Attribute("producedPower") = Attribute("producedPower") / 1000)
+.filter(Attribute("producedPower") < 80)
+.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q2", "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+#+end_src
+  
+These queries are semantically equivalent but syntactically different.
+
+- The order of the =filter= and =map= operator is switched.
+- In the second query, the attribute =producedPower= is compared
+  against 80 instead of 80000, to account for the division by 1000 in
+  the preceding =map= operation.
+
+By default, NebulaStream does not use query merging.
+This is reflected in the execution plans of both queries.
+We can show these execution plans by clicking on =Show details= in the
+web UI query catalog, selecting the tree icon on the right, and then
+selecting =Execution plan= from the drop down box.
+
+TODO Animation
+
+Each query has its own query plan running on the node to which the
+=windTurbines= physical source is attached.
+
+Query plan for query 1:
+
+#+begin_example
+TODO query plan
+#+end_example
+
+Query plan for query 2:
+
+#+begin_example
+TODO query plan
+#+end_example
+
+Note that the operators in these query plans have different IDs.
+
+TODO Different IDs
+
+To turn on query merging, we have to specify a configuration option in
+the coordinator configuration.
+
+#+begin_src yaml
+optimizer:
+  queryMergerRule: "Z3SignatureBasedCompleteQueryMergerRule"
+#+end_src
+
+We have to restart the coordinator for the configuration change to
+take effect.
+
+When we now submit the two queries again, NebulaStream will realize
+that these queries process tuples from the same logical source and
+will optimize them together.
+Notice how the status of both queries briefly changes to =OPTIMIZING=
+when submitting the second query.
+
+TODO Animation
+
+Afterwards, both queries share a query plan.
+
+#+begin_example
+TODO Query plan
+#+end_example
+
+Note that only the two =SINK= operators have different IDs because
+they send the result to different MQTT topics.
+The other operators have the same operator IDs in both queries.
+
+TODO Operator IDs.
+
+
