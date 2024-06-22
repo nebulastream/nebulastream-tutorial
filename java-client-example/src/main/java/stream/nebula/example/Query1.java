@@ -10,6 +10,7 @@ import stream.nebula.runtime.NebulaStreamRuntime;
 import stream.nebula.runtime.Query;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static stream.nebula.expression.Expressions.attribute;
 import static stream.nebula.expression.Expressions.literal;
@@ -26,7 +27,7 @@ import static stream.nebula.operators.window.EventTime.eventTime;
  *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
  * </pre>
  *
- * The program prints the status of the submitted query for 10 seconds and then stops the query.
+ * The program waits until the status of the query has changed to RUNNING, then waits 10 seconds, and stops the query.
  */
 public class Query1 {
 
@@ -40,13 +41,21 @@ public class Query1 {
                 .filter(attribute("consumedPower").greaterThan(10000));
 
         // Finish the query with a sink.
-        Sink sink = query.sink(new MQTTSink("ws://mosquitto:9001", "q1-results", "user", 1000,
+        query.sink(new MQTTSink("ws://mosquitto:9001", "q1-results", "user", 1000,
                 MQTTSink.TimeUnits.milliseconds, 0, MQTTSink.ServiceQualities.atLeastOnce, true));
 
         // Submit the query to the coordinator.
         int queryId = nebulaStreamRuntime.executeQuery(query, "BottomUp");
 
-        // Print the status of the query to the console for 10 seconds.
+        // Wait until the query status changes to running
+        for (String status = null;
+             !Objects.equals(status, "RUNNING");
+             status = nebulaStreamRuntime.getQueryStatus(queryId)) {
+            System.out.printf("Query id: %d, status: %s\n", queryId, status);
+            Thread.sleep(1000);
+        };
+
+        // Let the query run for 10 seconds
         for (int i = 0; i < 10; ++i) {
             String status = nebulaStreamRuntime.getQueryStatus(queryId);
             System.out.printf("Query id: %d, status: %s\n", queryId, status);
@@ -55,6 +64,13 @@ public class Query1 {
 
         // Stop the query
         nebulaStreamRuntime.stopQuery(queryId);
-    }
 
+        // Wait until the query has stopped
+        for (String status = null;
+             !Objects.equals(status, "STOPPED");
+             status = nebulaStreamRuntime.getQueryStatus(queryId)) {
+            System.out.printf("Query id: %d, status: %s\n", queryId, status);
+            Thread.sleep(1000);
+        };
+    }
 }
