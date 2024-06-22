@@ -8,14 +8,6 @@ services:
     volumes:
       - ./:/tutorial
 
-  test-worker:
-    image: nebulastream/nes-executable-image:latest
-    entrypoint: "nesWorker --configPath=/tutorial/worker-1.yaml"
-    depends_on:
-      - coordinator
-    volumes:
-      - ./:/tutorial
-
   consumers-worker:
     image: nebulastream/nes-executable-image:latest
     entrypoint: "nesWorker --configPath=/tutorial/consumersWorker.yaml"
