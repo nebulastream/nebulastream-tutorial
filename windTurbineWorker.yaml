@@ -14,15 +14,7 @@ physicalSources:
     physicalSourceName: windTurbines
     type: MQTT_SOURCE
     configuration:
-      # The client ID under which the source connects to the MQTT broker.
-      # Needs to be unique for each source to avoid frequent disconnections and possible query failures.
-      clientId: NES_source_windTurbines_
-      userName: windTurbines
       url: ws://mosquitto:9001
       topic: windTurbines
-      qos: 0
-      inputFormat: JSON
-      cleanSession: true
-      flushIntervalMS: 60
 
 workerId: 5

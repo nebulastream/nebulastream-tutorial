@@ -305,14 +305,8 @@ physicalSources:
     physicalSourceName: consumers
     type: MQTT_SOURCE
     configuration:
-      clientId: NES_source_consumers_
-      userName: consumers
       url: ws://mosquitto:9001
       topic: consumers
-      qos: 2
-      inputFormat: JSON
-      cleanSession: true
-      flushIntervalMS: 10
 #+end_src
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#physical-sources-configuration][NebulaStream documentation: Physical Sources Configuration]]
@@ -432,9 +426,7 @@ to an output sink, looks like this:
 Query::from("consumers")
 
       /* Finish the query by sending tuples to an MQTT sink. */
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "consumers-copy",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "consumers-copy"));
 #+end_src
 
 ** Running queries
@@ -465,9 +457,7 @@ Query 1 uses the =filter= operator to filter the tuples of the =consumers= logic
 #+begin_src c++
 Query::from("consumers")      
       .filter(Attribute("consumedPower") > 10000) 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q1-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
 #+end_src
 
 TODO Output
@@ -484,9 +474,7 @@ We can also filter over multiple attributes, by combining the predicates with =&
 #+begin_example
 Query::from("consumers")      
       .filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1) 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q2-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
 #+end_example
 #+end_src
 
@@ -504,9 +492,7 @@ The following query contains these building blocks:
 Query::from("consumers")      
       .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1 &&
               MOD(Attribute("sectorId"), 2) == 0) 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q3-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
 
 #+end_src
 
@@ -528,9 +514,7 @@ The following query, overwrites the value of the attribute =consumedPower= with 
 #+begin_src c++
 Query::from("consumers")
        .map(Attribute("consumedPower") = Attribute("consumedPower") / 1000)
-       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                        "q4-results",
-                                        "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q4-results"));
 #+end_src
 
 TODO Output
@@ -548,9 +532,7 @@ The following query combines the tuples from the =windTurbines= and =solarPanels
 #+begin_src c++
 Query::from("windTurbines")
       .unionWith(Query::from("solarPanels"))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q5-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q5-results"));
 #+end_src
 
 The query produces tuples which look like this:
@@ -577,9 +559,7 @@ Query::from("windTurbines")
       .map(Attribute("source") = 1)
       .unionWith(Query::from("solarPanels")
                        .map(Attribute("source") = 2))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q6-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q6-results"));
 #+end_src
 
 The query produces tuples which look like this:
@@ -607,8 +587,7 @@ Query::from("solarPanels")
       .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q7-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
 
 #+end_src
 
@@ -632,8 +611,7 @@ Query::from("solarPanels")
       .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q8-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q8-results"));
 #+end_src
 
 The result of the query is visualized in the Grafana panel =Q8: Sliding windows=.
@@ -670,8 +648,7 @@ Query::from("windTurbines")
       .where(Attribute("JoinKey") == Attribute("JoinKey"))
       .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q9-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results"));
 #+end_src
 
 The query produces tuples which look like this:
@@ -697,8 +674,7 @@ Query::from("solarPanels")
       .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","solarPanelDashboards",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "solarPanelDashboards"));
 #+end_src
 
 #+begin_src c++
@@ -706,8 +682,7 @@ Query::from("windTurbine")
       .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","windTurbineDashboards",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "windTurbineDashboards"));
 #+end_src
 
 TODO Animation
@@ -732,8 +707,7 @@ Query::from("windTurbines")
       .where(Attribute("JoinKey") == Attribute("JoinKey"))
       .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "differenceProducedConsumedPower",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "differenceProducedConsumedPower"));
 #+end_src
 
 We can control the wind speed using the control panel in the 3D visualization.
@@ -873,7 +847,7 @@ Query 1: Filter before map
 Query::from("windTurbines")
 .filter(Attribute("producedPower") < 80000)
 .map(Attribute("producedPower") = Attribute("producedPower") / 1000)
-.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q1", "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-merged-results"));
 #+end_src
 
 Query 2: Map before filter
@@ -882,7 +856,7 @@ Query 2: Map before filter
 Query::from("windTurbines")
 .map(Attribute("producedPower") = Attribute("producedPower") / 1000)
 .filter(Attribute("producedPower") < 80)
-.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001","q2", "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds,0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-merged-results"));
 #+end_src
   
 These queries are semantically equivalent but syntactically different.

@@ -10,14 +10,7 @@ Query::from("consumers")
       .filter(Attribute("consumedPower") > 10000)
 
       /* Send to a MQTT sink with topic "q1-results". */
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",                              /* The MQTT broker URL */
-                                       "q1-results",                                       /* The MQTT topic */
-                                       "user",                                             /* The user with which to connect to the MQTT broker */
-                                       1000,                                               /* Maximum number of buffered messages */
-                                       MQTTSinkDescriptor::TimeUnits::milliseconds, 0,     /* Delay before sending messages to the broker */
-                                       MQTTSinkDescriptor::ServiceQualities::atLeastOnce,  /* MQTT QoS */
-                                       true                                                /* Connect asynchronously */
-                                       ));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
 ```
 
 # Query 2: Filter over multiple attributes
@@ -31,9 +24,7 @@ Query::from("consumers")
       /* Combine filters over multiple attributes with && or || */
       .filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1)
 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q2-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
 ```
 
 # Query 3: Filter with complex expressions
@@ -47,9 +38,7 @@ Query::from("consumers")
       /* Complex expression over a single attribute using logical and arithmetic operations. */
       .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1) 
 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q3-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
 ```
 
 # Query 4: Transform data
@@ -62,9 +51,7 @@ Query::from("consumers")
        /* Assign the result of a complex expression to an existing attribute. */
        .map(Attribute("consumedPower") = Attribute("consumedPower") / 1000)
 
-       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                        "q4-results",
-                                        "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q4-results"));
 ```
 
 # Query 5: Combine multiple data sources
@@ -77,9 +64,7 @@ Query::from("windTurbines")
       /* Combine with the tuples from the solarPanels source. */
       .unionWith(Query::from("solarPanels"))
       
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q5-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q5-results"));
 ````
 
 # Query 6: Enrich tuples with data
@@ -97,9 +82,7 @@ Query::from("windTurbines")
                         /* Assign a different constant to the tuples of the solarPanels source. */
                        .map(Attribute("Source") = 2))
 
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q6-results",
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atMostOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q6-results"));
 ```
 
 # Query 7: Window aggregations with tumbling windows
@@ -118,9 +101,7 @@ Query::from("solarPanels")
        /* Compute the sum of the attribute producedPower */ 
        .apply(Sum(Attribute("producedPower")))
 
-       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                        "q7-results", 
-                                        "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
 ```
 
 # Query 8: Window aggregations with sliding windows
@@ -136,9 +117,7 @@ Query::from("solarPanels")
       
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "q8-results", 
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q8-results"));
 
 ```
 
@@ -169,7 +148,5 @@ Query::from("windTurbines")
        /* Compute the difference between produced and consumed power. */
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
       
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", 
-                                       "q9-results", 
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results"));
 ```

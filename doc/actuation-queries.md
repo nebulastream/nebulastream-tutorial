@@ -10,9 +10,7 @@ Query::from("windTurbines")
       .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "windTurbineDashboards", 
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "windTurbineDashboards"));
 
 ```
 
@@ -28,9 +26,7 @@ Query::from("solarPanels")
       .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001",
-                                       "solarPanelDashboards", 
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "solarPanelDashboards"));
 
 ```
 
@@ -53,7 +49,5 @@ Query::from("windTurbines")
                       .where(Attribute("JoinKey") == Attribute("JoinKey"))
                       .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", 
-                                       "differenceProducedConsumedPower", 
-                                       "user", 1000, MQTTSinkDescriptor::TimeUnits::milliseconds, 0, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "differenceProducedConsumedPower"));
 ```
