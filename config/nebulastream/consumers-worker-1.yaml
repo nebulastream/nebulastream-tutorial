@@ -16,11 +16,6 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: streetLights
-      clientId: NES_source_streetLights_
-      userName: streetLights
-      qos: 0
-      inputFormat: JSON
-      cleanSession: true
-      flushIntervalMS: 60
+      clientId: streetLights_client_
 
 workerId: 2
