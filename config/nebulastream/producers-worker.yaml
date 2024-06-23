@@ -6,7 +6,7 @@ logLevel: LOG_ERROR
 coordinatorHost: coordinator
 
 # Hostname under which this worker registers with the coordinator. Corresponds to the service name in docker-compose.yml.
-localWorkerHost: solarpanels-worker
+localWorkerHost: producers-worker
 
 # Physical source configuration
 physicalSources:
@@ -16,5 +16,11 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: solarPanels
+  - logicalSourceName: windTurbines
+    physicalSourceName: windTurbines
+    type: MQTT_SOURCE
+    configuration:
+      url: ws://mosquitto:9001
+      topic: windTurbines
 
-workerId: 3
+workerId: 4

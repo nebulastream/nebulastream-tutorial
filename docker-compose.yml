@@ -8,25 +8,25 @@ services:
     volumes:
       - ./config/nebulastream:/config
 
-  consumers-worker:
+  producers-worker:
     image: nebulastream/nes-executable-image:latest
-    entrypoint: "nesWorker --configPath=/config/consumers-worker.yaml"
+    entrypoint: "nesWorker --configPath=/config/producers-worker.yaml"
     depends_on:
       - coordinator
     volumes:
       - ./config/nebulastream:/config
 
-  solarpanels-worker:
+  consumers-worker-1:
     image: nebulastream/nes-executable-image:latest
-    entrypoint: "nesWorker --configPath=/config/solarpanels-worker.yaml"
+    entrypoint: "nesWorker --configPath=/config/consumers-worker-1.yaml"
     depends_on:
       - coordinator
     volumes:
       - ./config/nebulastream:/config
 
-  windturbine-worker:
+  consumers-worker-2:
     image: nebulastream/nes-executable-image:latest
-    entrypoint: "nesWorker --configPath=/config/windturbines-worker.yaml"
+    entrypoint: "nesWorker --configPath=/config/consumers-worker-2.yaml"
     depends_on:
       - coordinator
     volumes:

@@ -23,7 +23,7 @@ worker:
 # - TEXT
 logicalSources:
   # windTurbines and solarPanels have the same schema
-  - logicalSourceName: "windTurbines"
+  - logicalSourceName: windTurbines
     fields:
       # Each wind turbine is uniquely identified.
       - name: producerId
@@ -40,7 +40,7 @@ logicalSources:
       - name: timestamp
         type: UINT64
   # windTurbines and solarPanels have the same schema.
-  - logicalSourceName: "solarPanels"
+  - logicalSourceName: solarPanels
     fields:
       - name: producerId
         type: INT8
@@ -50,7 +50,7 @@ logicalSources:
         type: INT32
       - name: timestamp
         type: UINT64
-  - logicalSourceName: "consumers"
+  - logicalSourceName: consumers
     fields:
       # Each consumer is uniquely identified.
       - name: consumerId

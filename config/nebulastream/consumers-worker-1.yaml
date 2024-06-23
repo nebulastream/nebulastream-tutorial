@@ -6,14 +6,15 @@ logLevel: LOG_ERROR
 coordinatorHost: coordinator
 
 # Hostname under which this worker registers with the coordinator. Corresponds to the service name in docker-compose.yml.
-localWorkerHost: consumers-worker
+localWorkerHost: consumers-worker-1
 
 # Physical source configuration
 physicalSources:
   - logicalSourceName: consumers
-    physicalSourceName: consumers
+    physicalSourceName: streetLights
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: consumers
-workerId: 4
+
+workerId: 2
