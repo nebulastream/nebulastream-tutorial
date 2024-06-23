@@ -5,6 +5,11 @@ logLevel: LOG_ERROR
 # Corresponds to the service name in docker-compose.yml.
 coordinatorHost: coordinator
 
+# Hostname under which the internal worker registers with the coordinator.
+# Corresponds to the service name in docker-compose.yml.
+worker:
+  localWorkerHost: coordinator
+
 # IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
 restIp: 0.0.0.0
 
