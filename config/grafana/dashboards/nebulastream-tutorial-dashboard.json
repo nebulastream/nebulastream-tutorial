@@ -544,6 +544,103 @@
         "x": 0,
         "y": 17
       },
+      "id": 20,
+      "panels": [],
+      "title": "Copy of consumers logical sources",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mqtt-datasource",
+        "uid": "P943914097251C5CB"
+      },
+      "description": "Copy of the consumers logical source\n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 18
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-mqtt-datasource",
+            "uid": "NES_datatown"
+          },
+          "refId": "A",
+          "topic": "consumers-copy"
+        }
+      ],
+      "title": "Q0: Copying source to sink",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "consumers$consumedPower",
+                "consumers$consumerId",
+                "consumers$sectorId",
+                "consumers$timestamp",
+                "consumers$consumerType"
+              ]
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
       "id": 6,
       "panels": [],
       "title": "ETL operations",
@@ -588,7 +685,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 18
+        "y": 27
       },
       "id": 5,
       "options": {
@@ -672,9 +769,9 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 18
+        "y": 27
       },
-      "id": 7,
+      "id": 19,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -695,10 +792,10 @@
             "uid": "NES_datatown"
           },
           "refId": "A",
-          "topic": "q2-results"
+          "topic": "q1-results"
         }
       ],
-      "title": "Q2: Filter over multiple attributes",
+      "title": "Q1: Filter tuples",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -756,7 +853,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 18
+        "y": 27
       },
       "id": 8,
       "options": {
@@ -840,7 +937,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 26
+        "y": 35
       },
       "id": 13,
       "options": {
@@ -924,9 +1021,9 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 26
+        "y": 35
       },
-      "id": 14,
+      "id": 7,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -947,21 +1044,21 @@
             "uid": "NES_datatown"
           },
           "refId": "A",
-          "topic": "q5-results"
+          "topic": "q2-results"
         }
       ],
-      "title": "Q5: Union of multiple queries",
+      "title": "Q2: Filter over multiple attributes",
       "transformations": [
         {
           "id": "filterFieldsByName",
           "options": {
             "include": {
               "names": [
-                "windTurbines$groupId",
-                "windTurbines$producedPower",
-                "windTurbines$producerId",
-                "windTurbines$timestamp",
-                "windTurbines$Source"
+                "consumers$consumedPower",
+                "consumers$consumerId",
+                "consumers$consumerType",
+                "consumers$sectorId",
+                "consumers$timestamp"
               ]
             }
           }
@@ -1008,7 +1105,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 26
+        "y": 35
       },
       "id": 15,
       "options": {
@@ -1059,7 +1156,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 43
       },
       "id": 10,
       "panels": [],
@@ -1119,7 +1216,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 35
+        "y": 44
       },
       "id": 9,
       "options": {
@@ -1233,7 +1330,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 35
+        "y": 44
       },
       "id": 11,
       "options": {
@@ -1346,7 +1443,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 35
+        "y": 44
       },
       "id": 12,
       "options": {
