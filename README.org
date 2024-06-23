@@ -358,11 +358,7 @@ The NebulaStream web UI can be accessed at [[http://localhost:9000][http://local
 
 The query catalog shows the queries that are known in the system and their status. For example, a query can be in the status =OPTIMIZING=, =RUNNING=, =STOPPED=, or =FAILED=.
 
-We can also submit new queries through the query catalog.
-
-Operations with query catalog are described in more details in the following sections. TODO link sections, running queries, also query merging?
-
-TODO Screenshot?
+We can also submit new queries through the query catalog, which we demonstrate in [[#sec:running-nebulastream-queries][Running NebulaStream queries]], and display the execution plan of running queries, which we demonstrate in [[#sec:query-merging][Query merging]].
 
 ** The topology screen
 
@@ -394,15 +390,18 @@ You can verify the connection by clicking on "Save changes", after which a messa
 TODO Screenshot
 
 * Running NebulaStream queries
+:PROPERTIES:
+:CUSTOM_ID: sec:running-nebulastream-queries
+:END:
 
 NebulaStream supports queries with the following operators:
 
-- Basic ETL operations, e.g., =filter=, =map=, =project= and =union=.
-- Window aggregations. TODO Are sliding windows supported?
-- Window-based joins of multiple logical sources.
-- Java UDFs with Map and FlatMap semantics.
-- TensorFlow Lite UDFs. TODO Not shown? Link to Java client example?
-- Complex event processing operations. TODO Not shown. Link to documentation?
+- Basic ETL operations, e.g., =filter=, =map=, =project= and =union=
+- Window aggregations
+- Window-based joins of multiple logical sources
+- Java UDFs with Map and FlatMap semantics
+- TensorFlow Lite UDFs (not discussed in this tutorial)
+- Complex event processing operations (not discussed in this tutorial)
 
 Further information: [[https://docs.nebula.stream/docs/query-api/][NebulaStream documentation: Query API]]
 
@@ -461,7 +460,14 @@ Query::from("consumers")
       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
 #+end_src
 
-TODO Output
+The query produces tuples which look like this:
+
+#+begin_src json
+{"consumers$consumedPower":10673,"consumers$consumerId":3,"consumers$consumerType":"factory","consumers$sectorId":1,"consumers$timestamp":1719125820932}
+{"consumers$consumedPower":10673,"consumers$consumerId":4,"consumers$consumerType":"factory","consumers$sectorId":0,"consumers$timestamp":1719125820932}
+{"consumers$consumedPower":10675,"consumers$consumerId":0,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719126180932}
+{"consumers$consumedPower":10675,"consumers$consumerId":1,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719126180932}
+#+end_src
 
 When we run this query in the UI, the filtered tuples are shown in the Grafana panel =Q1: Filter tuples=.
 
@@ -472,32 +478,24 @@ TODO screenshot
 We can also filter over multiple attributes, by combining the predicates with =&&=:
 
 #+begin_src c++
-#+begin_example
 Query::from("consumers")      
       .filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1) 
       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
-#+end_example
 #+end_src
-
-TODO Output
 
 The result tuples are shown in the Grafana panel =Q2: Filter over multiple attributes=.
 
 ** Query 3: Filter with complex expressions
 
-In general, the =filter= operator evaluates a complex expression consisting of =Attribute("name")= terms, boolean operators (=&&= and =||=) and arithmetic operations, and arithmetic functions:
+In general, the =filter= operator evaluates a complex expression consisting of =Attribute("name")= terms, boolean operators (=&&= and =||=) and arithmetic operations.
 
 The following query contains these building blocks:
 
 #+begin_src c++
 Query::from("consumers")      
-      .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1 &&
-              MOD(Attribute("sectorId"), 2) == 0) 
+      .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1)
       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
-
 #+end_src
-
-TODO Output
 
 The result tuples are shown in the Grafana panel =Q3: Filter with complex expressions=.
 
@@ -517,8 +515,6 @@ Query::from("consumers")
        .map(Attribute("consumedPower") = Attribute("consumedPower") / 1000)
        .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q4-results"));
 #+end_src
-
-TODO Output
 
 The result tuples are shown in the Grafana panel =Q4: Transform data with map=.
 
@@ -589,12 +585,18 @@ Query::from("solarPanels")
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
-
 #+end_src
 
 The query produces tuples which look like this:
 
-TODO Output
+#+begin_src json
+{"solarPanels$end":1719378000000,"solarPanels$groupId":0,"solarPanels$producedPower":7020,"solarPanels$start":1719374400000}
+{"solarPanels$end":1719378000000,"solarPanels$groupId":1,"solarPanels$producedPower":6964,"solarPanels$start":1719374400000}
+{"solarPanels$end":1719378000000,"solarPanels$groupId":2,"solarPanels$producedPower":7168,"solarPanels$start":1719374400000}
+{"solarPanels$end":1719378000000,"solarPanels$groupId":3,"solarPanels$producedPower":7468,"solarPanels$start":1719374400000}
+#+end_src
+
+The attributes =start= and =end= indicate the start and end timestamps of the windows. The other attributes are the grouping attribute =groupId= and the aggregated value of =producedPower=.
 
 The result of the query is visualized in the Grafana panel =Q7: Tumbling windows=.
 There are four groups of solar panels, which are represented by different colors.
@@ -838,6 +840,9 @@ TODO Class to run all queries
 TODO Java UDFs
 
 * Query merging
+:PROPERTIES:
+:CUSTOM_ID: sec:query-merging
+:END:
 
 Query merging is an important feature of NebulaStream which aims to reduce redundant computation and data transfers in multi-user environment.
 We demonstrate query merging with the following queries:
