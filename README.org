@@ -334,13 +334,9 @@ With Docker containers running, we can already visualize the generated input dat
 
    TODO animation showing dashboards
 
-   *Note:* This display can be quite slow because Grafana is displaying every message received over MQTT which are about TODO: how many messages?
-   Later we will use window aggregations to reduce this data load.
-   To reduce the CPU load, collapse the top Data sources row in Grafana or click the green dot of the panels to stop streaming.
-
    *Note:* When Grafana is started for the first time, the MQTT datasource is not yet configured.
    This is indicated by the error triangles on red background in the dashboard.
-   Go to TODO, click on the datasource TODO, and enter =ws://mosquitto:9001= in the URI field.
+   In the hamburger menu in the top-left corner, select =Connections > Data sources=, click on the =NES_datatown= data source, and enter =ws://mosquitto:9001= in the URI field.
    Then go to Home; the dashboard should now show data.
    The Docker container should persist the configured datasource between restart.
 
@@ -441,9 +437,14 @@ When the query is running, the result tuples are shown in the Grafana panel =Q0:
 
 The query produces tuples which look like this:
 
-TODO Output
+#+begin_src json
+{"consumers$consumedPower":2187,"consumers$consumerId":7,"consumers$consumerType":"household","consumers$sectorId":3,"consumers$timestamp":1719111420932}
+{"consumers$consumedPower":1255,"consumers$consumerId":0,"consumers$consumerType":"office","consumers$sectorId":2,"consumers$timestamp":1719111420932}
+{"consumers$consumedPower":12406,"consumers$consumerId":0,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719111420932}
+{"consumers$consumedPower":2187,"consumers$consumerId":0,"consumers$consumerType":"household","consumers$sectorId":0,"consumers$timestamp":1719111420932}
+#+end_src
 
-The name of each field is now prefixed with the name of the logical source, i.e., =consumers=, followed by the schema name separator =$=.
+The output contains tuples from all of the physical sources that make up the =consumers= logical source, i.e., =households=, =offices=, etc. The name of each field is now prefixed with the name of the logical source, i.e., =consumers=, followed by the schema name separator =$=.
 
 * Example queries
 :PROPERTIES:
