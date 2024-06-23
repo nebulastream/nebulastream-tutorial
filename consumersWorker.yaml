@@ -13,16 +13,7 @@ physicalSources:
   - logicalSourceName: consumers
     physicalSourceName: consumers
     type: MQTT_SOURCE
-    # TODO document and clean up
     configuration:
-      # The client ID under which the source connects to the MQTT broker.
-      # Needs to be unique for each source to avoid frequent disconnections and possible query failures.
-      clientId: NES_source_consumers_
-      userName: consumers
       url: ws://mosquitto:9001
       topic: consumers
-      qos: 0
-      inputFormat: JSON
-      cleanSession: true
-      flushIntervalMS: 10
 workerId: 4
