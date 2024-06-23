@@ -15,6 +15,6 @@ physicalSources:
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
-      topic: consumers
+      topic: streetLights
 
 workerId: 2
