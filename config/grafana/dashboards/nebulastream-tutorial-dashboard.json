@@ -792,10 +792,10 @@
             "uid": "NES_datatown"
           },
           "refId": "A",
-          "topic": "q1-results"
+          "topic": "q2-results"
         }
       ],
-      "title": "Q1: Filter tuples",
+      "title": "Q2: Filter tuples over multiple attributes",
       "transformations": [
         {
           "id": "filterFieldsByName",
