@@ -61,13 +61,13 @@ coordinator:
     - ./:/tutorial
 #+end_src
   
-- *consumers-worker*, *solarpanels-worker*, *windturbine-worker*: The Docker Compose configuration specifies multiple workers, which are configured to retrieve data from various data sources.
-  These also use the =nebulastream/nebulastream-executable-image= image with a custom entry point that specifies a worker-specific configuration file. The example below shows the *consumers-worker*; other workers are configured similarly.
+- *producers-worker*, *consumers-worker-1*, *consumers-worker-2*: The Docker Compose configuration specifies multiple workers, which are configured to retrieve data from various data sources.
+  These also use the =nebulastream/nebulastream-executable-image= image with a custom entry point that specifies a worker-specific configuration file. The example below shows the *producers-worker*; other workers are configured similarly.
 
   #+begin_src yaml
-consumers-worker:
+producers-worker:
   image: nebulastream/nes-executable-image:latest
-  entrypoint: "nesWorker --configPath=/config/consumersWorker.yaml"
+  entrypoint: "nesWorker --configPath=/config/producers-worker.yaml"
   depends_on:
     - coordinator
   volumes:
@@ -279,7 +279,6 @@ Next, we specify the physical data sources that are connected to the worker.
 A physical source connects to a concrete data source.
 Each physical source is associated with a specific logical source.
 The tuples provided by the data source have to match the schema of the logical source.
-Multiple physical sources can be associated with a single logical source, even across multiple NebulaStream workers. 
 
 NebulaStream supports reading data from CSV files or from popular message brokers, such es MQTT, Kafka, or OPC, as data sources.
 In this tutorial, we use an MQTT broker as the data source for all physical sources.
@@ -294,32 +293,34 @@ A physical source is configured with the following options:
 An MQTT source has the following configuration options:
 
 - =url=: The URL of the MQTT broker.
-- =clientId=: The client ID under which the source connects to the MQTT broker.
-
-  *Note:* Every worker has to connect using a unique client ID.
 - =topic=: The topic to which this physical source should subscribe.
-
-TODO: Document additional fields and clean up.
 
 #+begin_src yaml
 physicalSources:
   - logicalSourceName: consumers
-    physicalSourceName: consumers
+    physicalSourceName: streetLights
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
-      topic: consumers
+      topic: streetLights
 #+end_src
 
 Further information: [[https://docs.nebula.stream/docs/use-nebulastream/configuration/#physical-sources-configuration][NebulaStream documentation: Physical Sources Configuration]]
 
 *** Topology of logical and physical sources
 
-TODO Describe different combinations
+Multiple physical sources can be associated with a single logical source, even across multiple NebulaStream workers.
+A worker can also provide physical sources for different logical sources.
 
-#+CAPTION: Topology of logical and physical sources
+In our setup, we show the following cases:
+
+- The =windTurbines= and =solarPanels= logical sources each have a single physical source, which are configured on the =producers= worker.
+- The =consumers= logical source has four physical sources, which are configured on two physical sources, i.e., =consumers-worker-1= and =consumers-worker-2=.
+- On =consumers-worker-2=, there are three physical sources configured for the =consumers= logical source.
+
+#+CAPTION: Topology of logical and physical sources.
 #+ATTR_HTML: :width 800
-[[[[file:doc/topology-of-logical-and-physical-sources.png]]
+[[file:doc/topology-of-logical-and-physical-sources.png]]
 
 * Visualizing the input data
 
