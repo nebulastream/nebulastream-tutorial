@@ -8,9 +8,6 @@ coordinatorHost: coordinator
 # IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
 restIp: 0.0.0.0
 
-# TODO Delete this field?
-worker:
-  localWorkerHost: coordinator
 
 # Configure logical sources.
 # - logicalSourceName: Each logical source is identified by a unique name.
