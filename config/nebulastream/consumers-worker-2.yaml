@@ -16,17 +16,35 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: households
+      clientId: NES_source_households_
+      userName: households
+      qos: 0
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
   - logicalSourceName: consumers
     physicalSourceName: offices
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: offices
+      clientId: NES_source_offices_
+      userName: offices
+      qos: 0
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
   - logicalSourceName: consumers
     physicalSourceName: factories
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: factories
+      clientId: NES_source_factories_
+      userName: factories
+      qos: 0
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
 
-workerId: 3
+workerId: 1

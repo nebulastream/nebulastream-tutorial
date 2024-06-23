@@ -16,11 +16,23 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: solarPanels
+      clientId: NES_source_solarPanels_
+      userName: solarPanels
+      qos: 0
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
   - logicalSourceName: windTurbines
     physicalSourceName: windTurbines
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: windTurbines
+      clientId: NES_source_windTurbines_
+      userName: windTurbines
+      qos: 0
+      inputFormat: JSON
+      cleanSession: true
+      flushIntervalMS: 60
 
-workerId: 4
+workerId: 3
