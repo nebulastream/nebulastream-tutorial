@@ -45,11 +45,10 @@ services:
   mosquitto:
     image: eclipse-mosquitto
     ports:
-      - 1885:1885
+      - 1883:1883
       - 9001:9001
-      - 9002:9002
     volumes:
-      - ./mosquitto/config:/mosquitto/config
+      - ./config/mosquitto:/mosquitto/config
 
   # Grafana is used to visualize the input data and the result of the queries.
   # Access the dashboard: http://localhost:3000/
