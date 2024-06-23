@@ -1044,10 +1044,10 @@
             "uid": "NES_datatown"
           },
           "refId": "A",
-          "topic": "q2-results"
+          "topic": "q5-results"
         }
       ],
-      "title": "Q2: Filter over multiple attributes",
+      "title": "Q5: Union of multiple queries",
       "transformations": [
         {
           "id": "filterFieldsByName",
