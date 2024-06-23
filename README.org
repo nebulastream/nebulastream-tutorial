@@ -165,7 +165,7 @@ Next, we specify network information.
 
 - =restIp=: NebulaStream clients, e.g., the NebulaStream UI or the Java client, interact with the coordinator through a REST API. =restIp= specifies the IP address on which the coordinator listens for requests. The value =0.0.0.0= allows us to access the REST API from the host system.
 
-- The coordinator also starts an internal worker, for which we have to configure the hostname with the option =coordinatorHost=.
+- The coordinator also starts an internal worker, for which we have to configure the hostname with the options =coordinatorHost= and =worker.localWorkerHost=.
   The internal worker sits at the top of the NebulaStream cluster topology.
   It is also the worker on which sinks are executed.
 
@@ -174,6 +174,8 @@ The hostnames, e.g., =coordinator=, correspond to the service names in the [[id:
 #+begin_src yaml
 restIp: 0.0.0.0
 coordinatorHost: coordinator
+worker:
+  localWorkerHost: coordinator
 #+end_src
 
 *** Logical sources
