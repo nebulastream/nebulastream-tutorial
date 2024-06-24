@@ -932,18 +932,26 @@ Each query has its own query plan running on the node to which the
 Query plan for query 1:
 
 #+begin_example
-TODO query plan
+SINK(opId: 9, statisticId: 0: {NetworkSinkDescriptor{Version=0;Partition=1::8::0::0;NetworkSourceNodeLocation=tcp://coordinator:33449}})
+|--MAP(opId: 7, statisticId: 13, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])=FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000)))
+|  |--FILTER(opId: 6, statisticId: 12, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])<ConstantValue(BasicValue(80000)))
+|  |  |--SOURCE(opId: 5, statisticId: 3, originid: 1, windTurbines,LogicalSourceDescriptor(windTurbines, windTurbines))
+
 #+end_example
 
 Query plan for query 2:
 
 #+begin_example
-TODO query plan
+SINK(opId: 22, statisticId: 0: {NetworkSinkDescriptor{Version=0;Partition=2::21::0::0;NetworkSourceNodeLocation=tcp://coordinator:33449}})
+|--MAP(opId: 20, statisticId: 20, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])=FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000)))
+|  |--FILTER(opId: 19, statisticId: 19, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000))<ConstantValue(BasicValue(80)))
+|  |  |--SOURCE(opId: 18, statisticId: 3, originid: 1, windTurbines,LogicalSourceDescriptor(windTurbines, windTurbines))
 #+end_example
 
-Note that the operators in these query plans have different IDs.
-
-TODO Different IDs
+Note that even though the =FILTER= operator was pushed down in query
+2, the query plans are different because the operators in these query
+plans have different IDs. For example, the =MAP= operator has ID 7 in
+the query 1 and ID 20 in query 2.
 
 To turn on query merging, we have to specify a configuration option in
 the coordinator configuration.
@@ -967,13 +975,20 @@ TODO Animation
 Afterwards, both queries share a query plan.
 
 #+begin_example
-TODO Query plan
+SINK(opId: 26, statisticId: 0: {NetworkSinkDescriptor{Version=0;Partition=1::25::0::0;NetworkSourceNodeLocation=tcp://coordinator:46209}})
+|--MAP(opId: 9, statisticId: 13, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])=FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000)))
+|  |--FILTER(opId: 8, statisticId: 12, predicate: ConstantValue(BasicValue(80000))>FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)]))
+|  |  |--SOURCE(opId: 7, statisticId: 5, originid: 1, windTurbines,LogicalSourceDescriptor(windTurbines, windTurbines))
+SINK(opId: 28, statisticId: 0: {NetworkSinkDescriptor{Version=0;Partition=1::27::0::0;NetworkSourceNodeLocation=tcp://coordinator:46209}})
+|--MAP(opId: 9, statisticId: 13, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])=FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000)))
+|  |--FILTER(opId: 8, statisticId: 12, predicate: ConstantValue(BasicValue(80000))>FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)]))
+|  |  |--SOURCE(opId: 7, statisticId: 5, originid: 1, windTurbines,LogicalSourceDescriptor(windTurbines, windTurbines))
+
 #+end_example
 
-Note that only the two =SINK= operators have different IDs because
+Note that only the two =SINK= operators have different IDs (26 and 28) because
 they send the result to different MQTT topics.
-The other operators have the same operator IDs in both queries.
-
-TODO Operator IDs.
+The other operators have the same operator IDs in both queries, e.g.,
+the =MAP= operator has ID 9.
 
 
