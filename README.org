@@ -420,8 +420,10 @@ to an output sink, looks like this:
 /* Start a new query by reading from the consumers logical source */
 Query::from("consumers")
 
-      /* Finish the query by sending tuples to an MQTT sink. */
-      .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "consumers-copy"));
+/* Data transformations would go here */
+
+/* Finish the query by sending tuples to an MQTT sink */
+.sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "consumers-copy"));
 #+end_src
 
 ** Running queries
@@ -698,7 +700,7 @@ Query::from("solarPanels")
 #+end_src
 
 #+begin_src c++
-Query::from("windTurbine")
+Query::from("windTurbines")
       .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
@@ -983,7 +985,6 @@ SINK(opId: 28, statisticId: 0: {NetworkSinkDescriptor{Version=0;Partition=1::27:
 |--MAP(opId: 9, statisticId: 13, predicate: FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])=FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)])/ConstantValue(BasicValue(1000)))
 |  |--FILTER(opId: 8, statisticId: 12, predicate: ConstantValue(BasicValue(80000))>FieldAccessNode(windTurbines$producedPower[INTEGER(32 bits)]))
 |  |  |--SOURCE(opId: 7, statisticId: 5, originid: 1, windTurbines,LogicalSourceDescriptor(windTurbines, windTurbines))
-
 #+end_example
 
 Note that only the two =SINK= operators have different IDs (26 and 28) because
