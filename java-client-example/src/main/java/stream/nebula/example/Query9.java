@@ -9,6 +9,8 @@ import stream.nebula.runtime.Query;
 
 import java.io.IOException;
 
+import static stream.nebula.expression.Expressions.attribute;
+import static stream.nebula.expression.Expressions.literal;
 import static stream.nebula.operators.Aggregation.sum;
 import static stream.nebula.operators.window.EventTime.eventTime;
 import static stream.nebula.operators.window.TimeMeasure.hours;
@@ -20,15 +22,15 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  * <pre>
  *   Query::from("windTurbines")
  *          .unionWith(Query::from("solarPanels"))
- *          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+ *          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
  *          .apply(Sum(Attribute("producedPower")))
  *          .map(Attribute("JoinKey") = 1)
- *          .joinWith(Query::from("consumers"))
- *                          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+ *          .joinWith(Query::from("consumers")
+ *                          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
  *                          .apply(Sum(Attribute("consumedPower")))
  *                          .map(Attribute("JoinKey") = 1))
  *          .where(Attribute("JoinKey") == Attribute("JoinKey"))
- *          .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
+ *          .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10)))
  *          .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
  *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results", "user", 1000,
  *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
@@ -43,8 +45,21 @@ public class Query9 {
                 NebulaStreamRuntime.getRuntime("localhost", 8081);
 
         // Create a query from the consumers logical source and filter the tuples.
-        Query query = nebulaStreamRuntime.readFromSource("windTurbines");
         // TODO https://github.com/nebulastream/nebulastream-java-client/pull/315
+        Query query = nebulaStreamRuntime.readFromSource("windTurbines")
+                ;
+//                .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
+//                .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+//                .apply(sum("producedPower"))
+//                .map("JoinKey", literal(1))
+//                .joinWith(nebulaStreamRuntime.readFromSource("consumers")
+//                        .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+//                        .apply(sum("consumedPower"))
+//                        .map("JoinKey", literal(1)))
+//                .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
+//                .window(SlidingWindow.of(eventTime("start"), hours(1), minutes(10)))
+//                .map("DifferenceProducedConsumedPower",
+//                        attribute("producedPower").subtract(attribute("consumedPower")));
 
         // Finish the query with a sink.
         query.sink(new MQTTSink("ws://mosquitto:9001", "q9-results", "user", 1000,

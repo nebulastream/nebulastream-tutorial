@@ -820,11 +820,42 @@ The fluid query API of the Java client allows us to break up complex queries int
 
 The following is literal translation of query Q9 in Java.
 
-TODO Query
+#+begin_src java
+Query query = nebulaStreamRuntime.readFromSource("windTurbines")
+    .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
+    .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+    .apply(sum("producedPower"))
+    .map("JoinKey", literal(1))
+    .joinWith(nebulaStreamRuntime.readFromSource("consumers")
+              .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+              .apply(sum("consumedPower"))
+              .map("JoinKey", literal(1)))
+    .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
+    .window(SlidingWindow.of(eventTime("start"), hours(1), minutes(10)))
+    .map("DifferenceProducedConsumedPower",
+         attribute("producedPower").subtract(attribute("consumedPower")));
+#+end_src
 
 Instead of writing it as one big statement, we can also break it up as follows:
 
-TODO Query
+#+begin_src java
+Query windTurbines = nebulaStreamRuntime.readFromSource("windTurbines");
+Query solarPanels = nebulaStreamRuntime.readFromSource("solarPanels");
+Query producers = windTurbines.unionWith(solarPanels)
+    .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+    .apply(sum("producedPower"))
+    .map("JoinKey", literal(1)));
+Query consumers = nebulaStreamRuntime.readFromSource("consumers")
+    .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+    .apply(sum("consumedPower"))
+    .map("JoinKey", literal(1));
+Query joined = producers
+    .joinWith(consumers)
+    .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
+    .window(SlidingWindow.of(eventTime("start"), hours(1), minutes(10)));
+Query difference = joined.map("DifferenceProducedConsumedPower",
+                              attribute("producedPower").subtract(attribute("consumedPower")));
+#+end_src
 
 ** Query examples
 
