@@ -17,9 +17,7 @@ import static stream.nebula.expression.Expressions.literal;
  * <pre>
  *   Query::from("consumers")
  *          .map(Attribute("consumedPower") = Attribute("consumedPower") / 1000)
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q4-results", "user", 1000,
- *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
- *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+ *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q4-results"));
  * </pre>
  */
 public class Query4 {

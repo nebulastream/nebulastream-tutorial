@@ -32,9 +32,7 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  *          .where(Attribute("JoinKey") == Attribute("JoinKey"))
  *          .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
  *          .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results", "user", 1000,
- *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
- *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+ *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results"));
  * </pre>
  */
 public class Query9 {

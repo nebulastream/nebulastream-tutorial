@@ -22,9 +22,7 @@ import static stream.nebula.operators.window.EventTime.eventTime;
  * <pre>
  *   Query::from("consumers")
  *          .filter(Attribute("consumedPower") > 10000)
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results", "user", 1000,
- *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
- *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+ *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
  * </pre>
  *
  * The program waits until the status of the query has changed to RUNNING, then waits 10 seconds, and stops the query.

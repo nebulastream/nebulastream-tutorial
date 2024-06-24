@@ -16,9 +16,7 @@ import static stream.nebula.expression.Expressions.attribute;
  * <pre>
  *   Query::from("windTurbines")
  *          .unionWith(Query::from("solarPanels"))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q5-results", "user", 1000,
- *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
- *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+ *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q5-results"));
  * </pre>
  */
 public class Query5 {
