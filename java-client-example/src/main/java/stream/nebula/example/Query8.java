@@ -19,7 +19,7 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  * Java version of the following C++ NebulaStream query:
  *
  * <pre>
- *   Query::from("windTurbines")
+ *   Query::from("solarPanels")
  *          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
  *          .byKey(Attribute("groupId"))
  *          .apply(Sum(Attribute("producedPower")))
@@ -35,7 +35,7 @@ public class Query8 {
 
         // Compute the sum of the produced power per hour by the solar panels, group the results by the solar panel
         // group ID, and update the computation every 10 minutes.
-        Query query = nebulaStreamRuntime.readFromSource("windTurbines")
+        Query query = nebulaStreamRuntime.readFromSource("solarPanels")
                 .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
                 .byKey("groupId")
                 .apply(sum("producedPower"));

@@ -19,8 +19,8 @@ import static stream.nebula.operators.window.TimeMeasure.hours;
  * Java version of the following C++ NebulaStream query:
  *
  * <pre>
- *   Query::from("windTurbines")
- *          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+ *   Query::from("solarPanels")
+ *          .window(TumblingWindow::of(EventTime(Attribute("solarPanels")), Hours(1)))
  *          .byKey(Attribute("groupId"))
  *          .apply(Sum(Attribute("producedPower")))
  *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
@@ -35,7 +35,7 @@ public class Query7 {
 
         // Compute the sum of the produced power per hour by the solar panels and group the results by the
         // solar panel group ID.
-        Query query = nebulaStreamRuntime.readFromSource("windTurbines")
+        Query query = nebulaStreamRuntime.readFromSource("solarPanels")
                 .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
                 .byKey("groupId")
                 .apply(sum("producedPower"));
