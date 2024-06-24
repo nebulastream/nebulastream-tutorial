@@ -22,15 +22,15 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  * <pre>
  *   Query::from("windTurbines")
  *          .unionWith(Query::from("solarPanels"))
- *          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
+ *          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
  *          .apply(Sum(Attribute("producedPower")))
  *          .map(Attribute("JoinKey") = 1)
  *          .joinWith(Query::from("consumers")
- *                          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10)))
+ *                          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
  *                          .apply(Sum(Attribute("consumedPower")))
  *                          .map(Attribute("JoinKey") = 1))
  *          .where(Attribute("JoinKey") == Attribute("JoinKey"))
- *          .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10)))
+ *          .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
  *          .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
  *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results", "user", 1000,
  *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
@@ -49,15 +49,15 @@ public class Query9 {
         Query query = nebulaStreamRuntime.readFromSource("windTurbines")
                 ;
 //                .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
-//                .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+//                .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
 //                .apply(sum("producedPower"))
 //                .map("JoinKey", literal(1))
 //                .joinWith(nebulaStreamRuntime.readFromSource("consumers")
-//                        .window(SlidingWindow.of(eventTime("timestamp"), hours(1), minutes(10)))
+//                        .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
 //                        .apply(sum("consumedPower"))
 //                        .map("JoinKey", literal(1)))
 //                .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
-//                .window(SlidingWindow.of(eventTime("start"), hours(1), minutes(10)))
+//                .window(TumblingWindow.of(eventTime("start"), hours(1)))
 //                .map("DifferenceProducedConsumedPower",
 //                        attribute("producedPower").subtract(attribute("consumedPower")));
 
