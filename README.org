@@ -437,10 +437,13 @@ When the query is running, the result tuples are shown in the Grafana panel =Q0:
 The query produces tuples which look like this:
 
 #+begin_src json
-{"consumers$consumedPower":2187,"consumers$consumerId":7,"consumers$consumerType":"household","consumers$sectorId":3,"consumers$timestamp":1719111420932}
-{"consumers$consumedPower":1255,"consumers$consumerId":0,"consumers$consumerType":"office","consumers$sectorId":2,"consumers$timestamp":1719111420932}
-{"consumers$consumedPower":12406,"consumers$consumerId":0,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719111420932}
-{"consumers$consumedPower":2187,"consumers$consumerId":0,"consumers$consumerType":"household","consumers$sectorId":0,"consumers$timestamp":1719111420932}
+{
+  "consumers$consumedPower": 2187,
+  "consumers$consumerId": 7,
+  "consumers$consumerType": "household",
+  "consumers$sectorId": 3,
+  "consumers$timestamp": 1719111420932
+}
 #+end_src
 
 The output contains tuples from all of the physical sources that make up the =consumers= logical source, i.e., =households=, =offices=, etc. The name of each field is now prefixed with the name of the logical source, i.e., =consumers=, followed by the schema name separator =$=.
@@ -461,13 +464,6 @@ Query::from("consumers")
 #+end_src
 
 The query produces tuples which look like this:
-
-#+begin_src json
-{"consumers$consumedPower":10673,"consumers$consumerId":3,"consumers$consumerType":"factory","consumers$sectorId":1,"consumers$timestamp":1719125820932}
-{"consumers$consumedPower":10673,"consumers$consumerId":4,"consumers$consumerType":"factory","consumers$sectorId":0,"consumers$timestamp":1719125820932}
-{"consumers$consumedPower":10675,"consumers$consumerId":0,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719126180932}
-{"consumers$consumedPower":10675,"consumers$consumerId":1,"consumers$consumerType":"factory","consumers$sectorId":3,"consumers$timestamp":1719126180932}
-#+end_src
 
 When we run this query in the UI, the filtered tuples are shown in the Grafana panel =Q1: Filter tuples=.
 
@@ -535,10 +531,12 @@ Query::from("windTurbines")
 The query produces tuples which look like this:
 
 #+begin_src json
-{"windTurbines$groupId":3,"windTurbines$producedPower":428,"windTurbines$producerId":8,"windTurbines$timestamp":1719756000981}
-{"windTurbines$groupId":3,"windTurbines$producedPower":518,"windTurbines$producerId":9,"windTurbines$timestamp":1719756000981}
-{"windTurbines$groupId":3,"windTurbines$producedPower":547,"windTurbines$producerId":10,"windTurbines$timestamp":1719756000981}
-{"windTurbines$groupId":3,"windTurbines$producedPower":526,"windTurbines$producerId":11,"windTurbines$timestamp":1719756000981}
+{
+  "windTurbines$groupId": 3,
+  "windTurbines$producedPower": 526,
+  "windTurbines$producerId": 11,
+  "windTurbines$timestamp": 1719756000981
+}
 #+end_src
 
 The schema portion of the result tuples is taken from the logical source of the first query, i.e., =windTurbines=.
@@ -562,10 +560,13 @@ Query::from("windTurbines")
 The query produces tuples which look like this:
 
 #+begin_src json
-{"windTurbines$source":1,"windTurbines$groupId":3,"windTurbines$producedPower":190,"windTurbines$producerId":14,"windTurbines$timestamp":1719939060981}
-{"windTurbines$source":1,"windTurbines$groupId":3,"windTurbines$producedPower":190,"windTurbines$producerId":15,"windTurbines$timestamp":1719939060981}
-{"windTurbines$source":2,"windTurbines$groupId":0,"windTurbines$producedPower":0,"windTurbines$producerId":0,"windTurbines$timestamp":1719095940092}
-{"windTurbines$source":2,"windTurbines$groupId":0,"windTurbines$producedPower":0,"windTurbines$producerId":5,"windTurbines$timestamp":1719095940092}
+{
+  "windTurbines$source": 2,
+  "windTurbines$groupId": 0,
+  "windTurbines$producedPower": 0,
+  "windTurbines$producerId": 5,
+  "windTurbines$timestamp": 1719095940092
+}
 #+end_src
 
 The result tuples are shown in the Grafana panel =Q6: Enrich tuples with map=. 
@@ -590,10 +591,12 @@ Query::from("solarPanels")
 The query produces tuples which look like this:
 
 #+begin_src json
-{"solarPanels$end":1719378000000,"solarPanels$groupId":0,"solarPanels$producedPower":7020,"solarPanels$start":1719374400000}
-{"solarPanels$end":1719378000000,"solarPanels$groupId":1,"solarPanels$producedPower":6964,"solarPanels$start":1719374400000}
-{"solarPanels$end":1719378000000,"solarPanels$groupId":2,"solarPanels$producedPower":7168,"solarPanels$start":1719374400000}
-{"solarPanels$end":1719378000000,"solarPanels$groupId":3,"solarPanels$producedPower":7468,"solarPanels$start":1719374400000}
+{
+  "solarPanels$end": 1719378000000,
+  "solarPanels$groupId": 3,
+  "solarPanels$producedPower": 7468,
+  "solarPanels$start": 1719374400000
+}
 #+end_src
 
 The attributes =start= and =end= indicate the start and end timestamps of the windows. The other attributes are the grouping attribute =groupId= and the aggregated value of =producedPower=.
@@ -656,11 +659,25 @@ Query::from("windTurbines")
 
 The query produces tuples which look like this:
 
-TODO Output
+#+begin_src json
+{
+  "consumers$JoinKey": 1,
+  "consumers$consumedPower": 626607,
+  "consumers$end": 1719198000000,
+  "consumers$start": 1719194400000,
+  "windTurbines$JoinKey": 1,
+  "windTurbines$end": 1719198000000,
+  "windTurbines$producedPower": 33796,
+  "windTurbines$start": 1719194400000,
+  "windTurbinesconsumers$DifferenceProducedConsumedPower": -592811,
+  "windTurbinesconsumers$end": 1719198000000,
+  "windTurbinesconsumers$start": 1719194400000
+}
+#+end_src
+
+The fields starting with =consumers$= and =windTurbines$= are taken from the tuples of the right-hand side and left-hand side of the join, respectively. The fields =windTurbinesconsumers$start= and =windTurbinesconsumers$end= encode the range of the join window. The field =windTurbinesconsumers$DifferenceProducedConsumedPower= is produced by the last =map= operator.
 
 The result of the query is visualized in the Grafana panel =Q9: Join=. Note that the 3D visualization must be visible on the screen, so that time advances in the data generator.
-
-TODO Describe colors
 
 TODO Animation
 * Actuating events in the 3D smart city
