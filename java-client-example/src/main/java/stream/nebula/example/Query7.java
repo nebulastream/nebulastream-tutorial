@@ -23,9 +23,7 @@ import static stream.nebula.operators.window.TimeMeasure.hours;
  *          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
  *          .byKey(Attribute("groupId"))
  *          .apply(Sum(Attribute("producedPower")))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results", "user", 1000,
- *                                           MQTTSinkDescriptor::TimeUnits::milliseconds, 0,
- *                                           MQTTSinkDescriptor::ServiceQualities::atLeastOnce, true));
+ *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
  * </pre>
  */
 public class Query7 {
