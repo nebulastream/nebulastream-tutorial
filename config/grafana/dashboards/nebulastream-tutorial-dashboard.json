@@ -1230,7 +1230,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "auto",
+        "orientation": "vertical",
         "showValue": "always",
         "stacking": "normal",
         "tooltip": {
@@ -1344,7 +1344,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "auto",
+        "orientation": "vertical",
         "showValue": "always",
         "stacking": "normal",
         "tooltip": {
@@ -1446,6 +1446,7 @@
         "y": 44
       },
       "id": 12,
+      "maxDataPoints": 20,
       "options": {
         "barRadius": 0,
         "barWidth": 0.97,
@@ -1457,7 +1458,7 @@
           "placement": "bottom",
           "showLegend": true
         },
-        "orientation": "auto",
+        "orientation": "vertical",
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
