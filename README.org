@@ -881,8 +881,6 @@ These can be run individually from an IDE or all queries at once, using =./gradl
 Query Q1 stops after running for 10 seconds to demonstrate the runtime API of the =NebulaStreamRuntime= object.
 The other queries have to be stopped manually.
 
-TODO Class to run all queries
-
 ** Java UDFs
 
 TODO Java UDFs
