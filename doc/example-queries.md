@@ -118,7 +118,6 @@ Query::from("solarPanels")
       .byKey(Attribute("groupId"))
       .apply(Sum(Attribute("producedPower")))
       .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q8-results"));
-
 ```
 
 # Query 9: Window join
@@ -131,7 +130,7 @@ Query::from("windTurbines")
       .unionWith(Query::from("solarPanels"))
       
       /* Compute the sum of produced power in the last hour, update every 10 minutes.
-      .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .apply(Sum(Attribute("producedPower")))
       
       /* Add a join key. */
@@ -139,11 +138,11 @@ Query::from("windTurbines")
       
       /* Join with consumers */
       .joinWith(Query::from("consumers")
-                      .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+                      .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
                       .apply(Sum(Attribute("consumedPower")))
                       .map(Attribute("JoinKey") = 1))
       .where(Attribute("JoinKey") == Attribute("JoinKey"))
-      .window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
+      .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
                       
        /* Compute the difference between produced and consumed power. */
       .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
