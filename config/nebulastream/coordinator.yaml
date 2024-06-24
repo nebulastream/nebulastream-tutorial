@@ -13,7 +13,6 @@ worker:
 # IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
 restIp: 0.0.0.0
 
-
 # Configure logical sources.
 # - logicalSourceName: Each logical source is identified by a unique name.
 # - fields: A source has a schema, an unordered list of named and typed attributes.
