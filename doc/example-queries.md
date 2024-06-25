@@ -152,7 +152,7 @@ Query::from("solarPanels")
 Query::from("windTurbines")
       .unionWith(Query::from("solarPanels"))
       
-      /* Compute the sum of produced power in the last hour, update every 10 minutes.
+      /* Compute the sum of produced power in the last hour, update every 10 minutes. */
       .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
       .apply(Sum(Attribute("producedPower")))
       
