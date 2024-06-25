@@ -1,4 +1,4 @@
-* Description
+* NebulaStream Tutorial
 
 The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to NebulaStream, and visualize their results.
 
@@ -14,12 +14,6 @@ For example, in this tutorial, street lights are turned off at night when the wi
 
 NebulaStream is used to gather measurements from energy producers and consumers, aggregate it, compute the difference between produced and consumed energy, and send out a signal that triggers a change of street light usage.
 
-TODO: Animation
-
-- Zoom into wind turbines and solar panels
-- Show labels with aggregate information
-- Zoom out
-- Show street that street lights turn off
 * Installation and execution
 
 The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compose]]:
@@ -329,10 +323,12 @@ With Docker containers running, we can already visualize the generated input dat
 
 2. Open Grafana at [[http://localhost:3000][http://localhost:3000]].
    Grafana should open with the NebulaStream dashboard.
-   The panels in the top row visualize the generated data, which is published on the MQTT topics =windturbines=, =solarpanels=, and =consumers=.
+   The panels in the top row visualize the generated data, which is published on the MQTT topics =windturbines=, =solarpanels=, =streetLights=, =households=, =offices=, and =factories=.
    The panels in the rows below are empty because there is no streaming query running yet in NebulaStream.
 
-   TODO animation showing dashboards
+   #+CAPTION: Initial Grafana dashboards
+   #+ATTR_HTML: :width 800
+   [[file:doc/initial-grafana-dashboard.png]]
 
    *Note:* When Grafana is started for the first time, the MQTT datasource is not yet configured.
    This is indicated by the error triangles on red background in the dashboard.
@@ -340,7 +336,9 @@ With Docker containers running, we can already visualize the generated input dat
    Then go to Home; the dashboard should now show data.
    The Docker container should persist the configured datasource between restart.
 
-   TODO: animation with above steps.
+   #+CAPTION: Configure missing MQTT data source URI in Grafana
+   #+ATTR_HTML: :width 800
+   [[file:doc/configure-data-sources.gif]]
 
 Of course, the purpose of NebulaStream is to execute streaming queries.
 We can submit queries to NebulaStream using the web UI, which we describe next.
