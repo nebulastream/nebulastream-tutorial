@@ -41,7 +41,6 @@ public class Query9 {
                 NebulaStreamRuntime.getRuntime("localhost", 8081);
 
         // Create a query from the consumers logical source and filter the tuples.
-        // TODO https://github.com/nebulastream/nebulastream-java-client/pull/315
         Query query = nebulaStreamRuntime.readFromSource("windTurbines")
                 .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
                 .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
