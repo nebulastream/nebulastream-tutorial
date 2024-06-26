@@ -459,7 +459,7 @@ Query 1 uses the =filter= operator to filter the tuples of the =consumers= logic
 
 #+begin_src c++
 Query::from("consumers")      
-.filter(Attribute("consumedPower") > 10000) 
+.filter(Attribute("consumedPower") >= 400) 
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
 #+end_src
 
@@ -475,7 +475,7 @@ We can also filter over multiple attributes, by combining the predicates with =&
 
 #+begin_src c++
 Query::from("consumers")      
-.filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1) 
+.filter(Attribute("consumedPower") >= 400 && Attribute("sectorId") == 1) 
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
 #+end_src
 
@@ -489,7 +489,7 @@ The following query contains these building blocks:
 
 #+begin_src c++
 Query::from("consumers")      
-.filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1)
+.filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 60 + 1)
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
 #+end_src
 
@@ -553,7 +553,7 @@ The =map= operator is applied to both input queries of the =unionWith= operator.
 Query::from("windTurbines")
 .map(Attribute("source") = 1)
 .unionWith(Query::from("solarPanels")
-.map(Attribute("source") = 2))
+           .map(Attribute("source") = 2))
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q6-results"));
 #+end_src
 

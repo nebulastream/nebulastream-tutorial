@@ -21,18 +21,18 @@ import static stream.nebula.operators.window.TimeMeasure.minutes;
  *
  * <pre>
  *   Query::from("windTurbines")
- *          .unionWith(Query::from("solarPanels"))
- *          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
- *          .apply(Sum(Attribute("producedPower")))
- *          .map(Attribute("JoinKey") = 1)
- *          .joinWith(Query::from("consumers")
- *                          .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
- *                          .apply(Sum(Attribute("consumedPower")))
- *                          .map(Attribute("JoinKey") = 1))
- *          .where(Attribute("JoinKey") == Attribute("JoinKey"))
- *          .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
- *          .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results"));
+ *   .unionWith(Query::from("solarPanels"))
+ *   .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+ *   .apply(Sum(Attribute("producedPower")))
+ *   .map(Attribute("JoinKey") = 1)
+ *   .joinWith(Query::from("consumers")
+ *            .window(TumblingWindow::of(EventTime(Attribute("timestamp")), Hours(1)))
+ *            .apply(Sum(Attribute("consumedPower")))
+ *            .map(Attribute("JoinKey") = 1))
+ *   .where(Attribute("JoinKey") == Attribute("JoinKey"))
+ *   .window(TumblingWindow::of(EventTime(Attribute("start")), Hours(1)))
+ *   .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q9-results"));
  * </pre>
  */
 public class Query9 {

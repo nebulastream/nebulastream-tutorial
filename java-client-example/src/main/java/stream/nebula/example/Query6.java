@@ -15,10 +15,10 @@ import static stream.nebula.expression.Expressions.literal;
  *
  * <pre>
  *   Query::from("windTurbines")
- *          .map(Attribute("source") = 1)
- *          .unionWith(Query::from("solarPanels")
- *                            .map(Attribute("Source") = 2))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q6-results"));
+ *   .map(Attribute("source") = 1)
+ *   .unionWith(Query::from("solarPanels")
+ *              .map(Attribute("Source") = 2))
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q6-results"));
  * </pre>
  */
 public class Query6 {

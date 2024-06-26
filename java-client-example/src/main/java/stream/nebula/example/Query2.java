@@ -15,8 +15,8 @@ import static stream.nebula.expression.Expressions.attribute;
  *
  * <pre>
  *   Query::from("consumers")
- *          .filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1)
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
+ *   .filter(Attribute("consumedPower") >= 400 && Attribute("sectorId") == 1)
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
  * </pre>
  */
 public class Query2 {
@@ -29,7 +29,7 @@ public class Query2 {
         // Process only those tuples from the `consumers` logical source where `consumedPower` is greater than 10000
         // and where `sectorId` equals 1.
         Query query = nebulaStreamRuntime.readFromSource("consumers")
-                .filter(attribute("consumedPower").greaterThan(10000)
+                .filter(attribute("consumedPower").greaterThanOrEqual(400)
                         .and(attribute("sectorId").equalTo(1)));
 
         // Finish the query with a sink.

@@ -16,8 +16,8 @@ import static stream.nebula.expression.Expressions.literal;
  *
  * <pre>
  *   Query::from("consumers")
- *          .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1)
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
+ *   .filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 60 + 1)
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
  * </pre>
  */
 public class Query3 {
