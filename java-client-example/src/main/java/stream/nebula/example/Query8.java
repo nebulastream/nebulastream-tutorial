@@ -2,18 +2,16 @@ package stream.nebula.example;
 
 import stream.nebula.exceptions.RESTException;
 import stream.nebula.operators.sinks.MQTTSink;
-import stream.nebula.operators.sinks.Sink;
 import stream.nebula.operators.window.SlidingWindow;
-import stream.nebula.operators.window.TumblingWindow;
 import stream.nebula.runtime.NebulaStreamRuntime;
 import stream.nebula.runtime.Query;
 
 import java.io.IOException;
 
 import static stream.nebula.operators.Aggregation.sum;
+import static stream.nebula.operators.window.Duration.hours;
+import static stream.nebula.operators.window.Duration.minutes;
 import static stream.nebula.operators.window.EventTime.eventTime;
-import static stream.nebula.operators.window.TimeMeasure.hours;
-import static stream.nebula.operators.window.TimeMeasure.minutes;
 
 /**
  * Java version of the following C++ NebulaStream query:

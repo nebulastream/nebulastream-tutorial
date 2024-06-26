@@ -30,8 +30,8 @@ public class Query3 {
         // Process only those tuples from the `consumers` logical source where `consumedPower` is between the
         // range 1 (inclusive) and 1000 + 1 (exclusive).
         Query query = nebulaStreamRuntime.readFromSource("consumers")
-                .filter(attribute("consumedPower").greaterThan(10000)
-                        .and(attribute("consumedPower").lessThan(literal(1000).add(1))));
+                .filter(attribute("consumedPower").greaterThan(1)
+                        .and(attribute("consumedPower").lessThan(literal(60).add(1))));
 
         // Finish the query with a sink.
         Sink sink = query.sink(new MQTTSink("ws://mosquitto:9001", "q3-results", "user", 1000,

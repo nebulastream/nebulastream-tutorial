@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'stream.nebula:nebulastream-java-client:0.0.87'
+    implementation 'stream.nebula:nebulastream-java-client:0.0.92'
 }
 
 mainClassName = 'stream.nebula.example.RunAllQueries'
