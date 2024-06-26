@@ -16,20 +16,17 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: households
-      clientId: households_client_
   - logicalSourceName: consumers
     physicalSourceName: offices
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: offices
-      clientId: offices_client_
   - logicalSourceName: consumers
     physicalSourceName: factories
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: factories
-      clientId: factories_client_
 
-workerId: 1
+workerId: 4
