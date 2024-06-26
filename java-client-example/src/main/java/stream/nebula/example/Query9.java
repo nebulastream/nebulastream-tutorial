@@ -2,8 +2,7 @@ package stream.nebula.example;
 
 import stream.nebula.exceptions.RESTException;
 import stream.nebula.operators.sinks.MQTTSink;
-import stream.nebula.operators.sinks.Sink;
-import stream.nebula.operators.window.SlidingWindow;
+import stream.nebula.operators.window.TumblingWindow;
 import stream.nebula.runtime.NebulaStreamRuntime;
 import stream.nebula.runtime.Query;
 
@@ -13,8 +12,7 @@ import static stream.nebula.expression.Expressions.attribute;
 import static stream.nebula.expression.Expressions.literal;
 import static stream.nebula.operators.Aggregation.sum;
 import static stream.nebula.operators.window.EventTime.eventTime;
-import static stream.nebula.operators.window.TimeMeasure.hours;
-import static stream.nebula.operators.window.TimeMeasure.minutes;
+import static stream.nebula.operators.window.Duration.hours;
 
 /**
  * Java version of the following C++ NebulaStream query:
@@ -45,19 +43,18 @@ public class Query9 {
         // Create a query from the consumers logical source and filter the tuples.
         // TODO https://github.com/nebulastream/nebulastream-java-client/pull/315
         Query query = nebulaStreamRuntime.readFromSource("windTurbines")
-                ;
-//                .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
-//                .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
-//                .apply(sum("producedPower"))
-//                .map("JoinKey", literal(1))
-//                .joinWith(nebulaStreamRuntime.readFromSource("consumers")
-//                        .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
-//                        .apply(sum("consumedPower"))
-//                        .map("JoinKey", literal(1)))
-//                .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
-//                .window(TumblingWindow.of(eventTime("start"), hours(1)))
-//                .map("DifferenceProducedConsumedPower",
-//                        attribute("producedPower").subtract(attribute("consumedPower")));
+                .unionWith(nebulaStreamRuntime.readFromSource("solarPanels"))
+                .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
+                .apply(sum("producedPower"))
+                .map("JoinKey", literal(1))
+                .joinWith(nebulaStreamRuntime.readFromSource("consumers")
+                        .window(TumblingWindow.of(eventTime("timestamp"), hours(1)))
+                        .apply(sum("consumedPower"))
+                        .map("JoinKey", literal(1)))
+                .where(attribute("JoinKey").equalTo(attribute("JoinKey")))
+                .window(TumblingWindow.of(eventTime("start"), hours(1)))
+                .map("DifferenceProducedConsumedPower",
+                        attribute("producedPower").subtract(attribute("consumedPower")));
 
         // Finish the query with a sink.
         query.sink(new MQTTSink("ws://mosquitto:9001", "q9-results", "user", 1000,
