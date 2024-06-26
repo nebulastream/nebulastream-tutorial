@@ -315,7 +315,7 @@ In our setup, we show the following cases:
 
 * Visualizing the input data
 
-With Docker containers running, we can already visualize the generated input data in Grafana:
+With Docker containers running, we can already show the generated input data in Grafana:
 
 1. Open the 3D visualization at [[http://localhost:9003][http://localhost:9003]] to start the data generator.
 
@@ -323,10 +323,10 @@ With Docker containers running, we can already visualize the generated input dat
 
 2. Open Grafana at [[http://localhost:3000][http://localhost:3000]].
    Grafana should open with the NebulaStream dashboard.
-   The panels in the top row visualize the generated data, which is published on the MQTT topics =windturbines=, =solarpanels=, =streetLights=, =households=, =offices=, and =factories=.
+   The panels in the top row show the generated data, which is published on the MQTT topics =windturbines=, =solarpanels=, =streetLights=, =households=, =offices=, and =factories=.
    The panels in the rows below are empty because there is no streaming query running yet in NebulaStream.
 
-   #+CAPTION: Initial Grafana dashboards
+   #+CAPTION: Initial Grafana dashboards.
    #+ATTR_HTML: :width 800
    [[file:doc/initial-grafana-dashboard.png]]
 
@@ -336,7 +336,7 @@ With Docker containers running, we can already visualize the generated input dat
    Then go to Home; the dashboard should now show data.
    The Docker container should persist the configured datasource between restart.
 
-   #+CAPTION: Configure missing MQTT data source URI in Grafana
+   #+CAPTION: Configure missing MQTT data source URI in Grafana.
    #+ATTR_HTML: :width 800
    [[file:doc/configure-data-sources.gif]]
 
@@ -365,19 +365,21 @@ We have defined three workers in the [[id:EE9DC662-28B7-4259-A49A-6ACB7C533D3C][
 These are the nodes 2-4.
 There is a fourth worker, node 1, which is automatically created by the coordinator.
 
+#+CAPTION: The topology of the workers with the internal worker of the coordinator as the root.
+#+ATTR_HTML: :width 800
+[[file:doc/topology-screen.png]]
+
 By default, when I worker registers itself with the coordinator, it will register as a child of the worker created by the coordinator.
 It is also possible to make hierarchical topologies with intermediate workers using the REST API.
 
 Further information: [[https://docs.nebula.stream/docs/clients/rest-api/#topology][NebulaStream documentation: Topology REST API]].
-
-TODO: Screenshot
 
 ** The source catalog
 
 The source catalog shows information about the logical sources known to the coordinator, i.e., the schema and the connected physical sources.
 We can also see on which node a physical source resides.
 
-TODO Screenshot
+TODO Animation: waiting for fix to show schema with TEXT fields
 
 ** The settings screen
 
@@ -385,7 +387,9 @@ On the settings screen, we can configure the hostname and port of the NebulaStre
 Since the coordinator Docker service is accessible on the host machine, the default values =localhost= and =8081= should work.
 You can verify the connection by clicking on "Save changes", after which a message "Connected to NebulaStream!" should appear.
 
-TODO Screenshot
+#+CAPTION: The settings screen.
+#+ATTR_HTML: :width 800
+[[file:doc/settings-screen.png]]
 
 * Running NebulaStream queries
 :PROPERTIES:
@@ -430,7 +434,9 @@ To run the query, we open the query catalog of the NebulaStream web UI at [[http
 Then we click on the =Add Query= button, paste the query into the text box, and click submit.
 After a moment, the query will show up as =OPTIMIZING= and later as =RUNNING= in the list below the text box.
 
-TODO Animation, Visualization in Graphana
+#+CAPTION: Submitting a query in the web UI.
+#+ATTR_HTML: :width 800
+[[file:doc/submit-query.gif]]
 
 When the query is running, the result tuples are shown in the Grafana panel =Q0: Copying source to sink=. Note that the 3D visualization must be running to produce the input data for the query.
 
@@ -463,11 +469,7 @@ Query::from("consumers")
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
 #+end_src
 
-The query produces tuples which look like this:
-
 When we run this query in the UI, the filtered tuples are shown in the Grafana panel =Q1: Filter tuples=.
-
-TODO screenshot
 
 ** Query 2: Filter over multiple attributes
 
@@ -605,7 +607,9 @@ The result of the query is visualized in the Grafana panel =Q7: Tumbling windows
 There are four groups of solar panels, which are represented by different colors.
 Note that the 3D visualization must be visible on the screen, so that time advances in the data generator.
 
-TODO Output visualization
+#+CAPTION: Visualization of tumbling window output in Grafana.
+#+ATTR_HTML: :width 800
+[[file:doc/q7-tumbling-windows-visualization.png]]
 
 ** Query 8: Window aggregations with sliding windows
 
@@ -620,9 +624,11 @@ Query::from("solarPanels")
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q8-results"));
 #+end_src
 
-The result of the query is visualized in the Grafana panel =Q8: Sliding windows=.
+The result of the query is visualized in the Grafana panel =Q8: Sliding windows=. In contrast to query Q7, where the X axis has a granularity of one hour, the X axis in query Q8 has a granularity of ten minutes.
 
-TODO Animation
+#+CAPTION: Visualization of sliding window output in Grafana.
+#+ATTR_HTML: :width 800
+[[file:doc/q8-sliding-windows-visualization.png]]
 
 ** Query 9: Join query
 
@@ -679,7 +685,10 @@ The fields starting with =consumers$= and =windTurbines$= are taken from the tup
 
 The result of the query is visualized in the Grafana panel =Q9: Join=. Note that the 3D visualization must be visible on the screen, so that time advances in the data generator.
 
-TODO Animation
+#+CAPTION: Visualization of the join query output in Grafana.
+#+ATTR_HTML: :width 800
+[[file:doc/q9-join-visualization.png]]
+
 * Actuating events in the 3D smart city
 
 We now have everything we need to construct an end-to-end query pipeline, which takes the data generated form the smart city, performs a computation on it with NebulaStream, and produces an output stream, which triggers an event in the smart city.
@@ -705,7 +714,9 @@ Query::from("windTurbines")
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "windTurbineDashboards"));
 #+end_src
 
-TODO Animation
+#+CAPTION: Updating the wind turbine power generation panels with NebulaStream.
+#+ATTR_HTML: :width 800
+[[file:doc/wind-turbines-panel-update.png]]
 
 ** Turning street lights on and off at night depending on available wind speed
 
@@ -731,9 +742,9 @@ Query::from("windTurbines")
 #+end_src
 
 We can control the wind speed using the control panel in the 3D visualization.
+For example, with wind speed 5, all street lights are illuminated throughout the night.
+With wind speed 4, a number of street lights are turned of during the night.
 It is also possible to reduce the rendering speed of the 3D visualization.
-
-TODO Animation
 
 * The Java client
 
@@ -924,10 +935,12 @@ We can show these execution plans by clicking on =Show details= in the
 web UI query catalog, selecting the tree icon on the right, and then
 selecting =Execution plan= from the drop down box.
 
-TODO Animation
-
 Each query has its own query plan running on the node to which the
 =windTurbines= physical source is attached.
+
+#+CAPTION: Separate execution plans when query merging is disabled.
+#+ATTR_HTML: :width 800
+[[file:doc/no-query-merging.gif]]
 
 Query plan for query 1:
 
@@ -970,8 +983,6 @@ will optimize them together.
 Notice how the status of both queries briefly changes to =OPTIMIZING=
 when submitting the second query.
 
-TODO Animation
-
 Afterwards, both queries share a query plan.
 
 #+begin_example
@@ -990,4 +1001,8 @@ they send the result to different MQTT topics.
 The other operators have the same operator IDs in both queries, e.g.,
 the =MAP= operator has ID 9.
 
+TODO Animation
 
+* Conclusion
+
+TODO Conclusion text
