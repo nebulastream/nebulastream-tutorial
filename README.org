@@ -1003,6 +1003,7 @@ the =MAP= operator has ID 9.
 
 TODO Animation
 
-* Conclusion
+* Further information
 
-TODO Conclusion text
+- [[https://docs.google.com/forms/d/e/1FAIpQLSfPMLql4SXN_Y8B-jJUjlvyuiLkOBcXLPKn1BUqSnkAcY51rg/viewform][Request access to the NebulaStream source code]]
+- [[https://app.slack.com/client/T037PH0LLH0/C037LL6L78D][Join our community Slack channel]]
