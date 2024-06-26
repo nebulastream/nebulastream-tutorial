@@ -57,8 +57,8 @@ This is similar to query 9 in `example-queries.md`.
 Query::from("windTurbines")
 .unionWith(Query::from("solarPanels"))
 
-/* Compute the sum of produced power in the last hour, update every 10 minutes.
-.window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+/* Compute the sum of produced power in the last hour, update every 10 minutes. */
+.window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(20)))
 .apply(Sum(Attribute("producedPower")))
 
 /* Add a join key. */
@@ -66,7 +66,7 @@ Query::from("windTurbines")
 
 /* Join with consumers */
 .joinWith(Query::from("consumers")
-          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(10))
+          .window(SlidingWindow::of(EventTime(Attribute("timestamp")), Hours(1), Minutes(20)))
           .apply(Sum(Attribute("consumedPower")))
           .map(Attribute("JoinKey") = 1))
 
@@ -74,7 +74,7 @@ Query::from("windTurbines")
 .where(Attribute("JoinKey") == Attribute("JoinKey"))
 
 // Join sliding inside a tumbling window with size 1 hour, slide 10 minutes
-.window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(10))
+.window(SlidingWindow::of(EventTime(Attribute("start")), Hours(1), Minutes(20)))
 
  /* Compute the difference between produced and consumed power. */
 .map(Attribute("DifferenceProducedConsumedPower") = Attribute("producedPower") - Attribute("consumedPower"))

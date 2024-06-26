@@ -21,8 +21,8 @@ import static stream.nebula.operators.window.EventTime.eventTime;
  *
  * <pre>
  *   Query::from("consumers")
- *          .filter(Attribute("consumedPower") > 10000)
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
+ *   .filter(Attribute("consumedPower") >= 400)
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
  * </pre>
  *
  * The program waits until the status of the query has changed to RUNNING, then waits 10 seconds, and stops the query.
@@ -36,7 +36,7 @@ public class Query1 {
 
         // Process only those tuples from the `consumers` logical source where `consumedPower` is greater than 10000.
         Query query = nebulaStreamRuntime.readFromSource("consumers")
-                .filter(attribute("consumedPower").greaterThan(10000));
+                .filter(attribute("consumedPower").greaterThanOrEqual(400));
 
         // Finish the query with a sink.
         query.sink(new MQTTSink("ws://mosquitto:9001", "q1-results", "user", 1000,

@@ -20,10 +20,10 @@ import static stream.nebula.operators.window.TimeMeasure.hours;
  *
  * <pre>
  *   Query::from("solarPanels")
- *          .window(TumblingWindow::of(EventTime(Attribute("solarPanels")), Hours(1)))
- *          .byKey(Attribute("groupId"))
- *          .apply(Sum(Attribute("producedPower")))
- *          .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
+ *   .window(TumblingWindow::of(EventTime(Attribute("solarPanels")), Hours(1)))
+ *   .byKey(Attribute("groupId"))
+ *   .apply(Sum(Attribute("producedPower")))
+ *   .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q7-results"));
  * </pre>
  */
 public class Query7 {

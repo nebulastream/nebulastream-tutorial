@@ -7,7 +7,7 @@ Process only those tuples from the `consumers` logical source where `consumedPow
 Query::from("consumers")
 
 /* Filter tuples with an expression on the consumedPower attribute */
-.filter(Attribute("consumedPower") > 10000)
+.filter(Attribute("consumedPower") >= 400)
 
 /* Send to a MQTT sink with topic "q1-results". */
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q1-results"));
@@ -23,7 +23,7 @@ and where `sectorId` equals 1.
 Query::from("consumers")
 
 /* Combine filters over multiple attributes with && or || */
-.filter(Attribute("consumedPower") > 10000 && Attribute("sectorId") == 1)
+.filter(Attribute("consumedPower") >= 400 && Attribute("sectorId") == 1)
 
 /* Send to a MQTT sink with topic "q2-results". */
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q2-results"));
@@ -39,7 +39,7 @@ range 1 (inclusive) and 1000 + 1 (exclusive).
 Query::from("consumers")
 
 /* Filter with a complex expression over a single attribute using logical and arithmetic operations. */
-.filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 1000 + 1)
+.filter(Attribute("consumedPower") >= 1 && Attribute("consumedPower") < 60 + 1)
 
 /* Send to a MQTT sink with topic "q3-results". */
 .sink(MQTTSinkDescriptor::create("ws://mosquitto:9001", "q3-results"));
