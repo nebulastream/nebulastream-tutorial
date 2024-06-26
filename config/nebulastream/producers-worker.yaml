@@ -16,13 +16,11 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: solarPanels
-      clientId: solarpanels_client_
   - logicalSourceName: windTurbines
     physicalSourceName: windTurbines
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: windTurbines
-      clientId: windturbines_client_
 
 workerId: 3

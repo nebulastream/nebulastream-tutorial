@@ -16,6 +16,5 @@ physicalSources:
     configuration:
       url: ws://mosquitto:9001
       topic: streetLights
-      clientId: streetLights_client_
 
 workerId: 2
