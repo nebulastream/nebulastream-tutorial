@@ -716,7 +716,7 @@ Query::from("windTurbines")
 
 #+CAPTION: Updating the wind turbine power generation panels with NebulaStream.
 #+ATTR_HTML: :width 800
-[[file:doc/wind-turbines-panels-update.png]]
+[[file:doc/wind-turbines-panel-updates.gif]]
 
 ** Turning street lights on and off at night depending on available wind speed
 
