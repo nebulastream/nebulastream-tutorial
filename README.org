@@ -14,7 +14,7 @@ Table of contents:
 - [[#example-queries][Example queries]]
 - [[#sec:actuating-events][Actuating events in the 3D smart city]]
 - [[#sec:the-java-client][The Java client]]
-- [[*Query merging][Query merging]]
+- [[#sec:query-merging][Query merging]]
 
 * Running example: The NebulaStream smart city
 :PROPERTIES:
