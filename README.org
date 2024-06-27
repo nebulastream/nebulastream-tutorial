@@ -14,7 +14,7 @@ Table of contents:
 - [[#example-queries][Example queries]]
 - [[#sec:actuating-events][Actuating events in the 3D smart city]]
 - [[#sec:the-java-client][The Java client]]
-- [[#sec:query-merging][Query merging]]
+- [[#query-merging][Query merging]]
 
 * Running example: The NebulaStream smart city
 :PROPERTIES:
@@ -934,7 +934,7 @@ TODO Java UDFs
 
 * Query merging
 :PROPERTIES:
-:CUSTOM_ID: sec:query-merging
+:CUSTOM_ID: query-merging
 :END:
 
 Query merging is an important feature of NebulaStream which aims to reduce redundant computation and data transfers in multi-user environment.
