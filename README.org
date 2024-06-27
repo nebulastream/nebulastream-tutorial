@@ -4,21 +4,21 @@ The NebulaStream tutorial demonstrates how to download and configure NebulaStrea
 
 Table of contents:
 
-- [[#sec:smart-city-example][Running example: The NebulaStream smart city]]
-- [[#sec:installation-and-execution][Installation and execution]]
-- [[#sec:docker-services][Docker services]]
-- [[#sec:configuration][Configuring NebulaStream]]
-- [[#sec:visualization][Visualizing the input data]]
-- [[#sec:web-ui][The NebulaStream web UI]]
-- [[#sec:running-nebulastream-queries][Running NebulaStream queries]]
+- [[#smart-city-example][Running example: The NebulaStream smart city]]
+- [[#installation-and-execution][Installation and execution]]
+- [[#docker-services][Docker services]]
+- [[#configuration][Configuring NebulaStream]]
+- [[#visualization][Visualizing the input data]]
+- [[#web-ui][The NebulaStream web UI]]
+- [[#running-nebulastream-queries][Running NebulaStream queries]]
 - [[#example-queries][Example queries]]
-- [[#sec:actuating-events][Actuating events in the 3D smart city]]
-- [[#sec:the-java-client][The Java client]]
+- [[#actuating-events][Actuating events in the 3D smart city]]
+- [[#the-java-client][The Java client]]
 - [[#query-merging][Query merging]]
 
 * Running example: The NebulaStream smart city
 :PROPERTIES:
-:CUSTOM_ID: sec:smart-city-example
+:CUSTOM_ID: smart-city-example
 :END:
 
 The tutorial is based on a smart city scenario, the NebulaStream IoTropolis.
@@ -31,7 +31,7 @@ NebulaStream is used to gather measurements from energy producers and consumers,
 
 * Installation and execution
 :PROPERTIES:
-:CUSTOM_ID: sec:installation-and-execution
+:CUSTOM_ID: installation-and-execution
 :END:
 
 The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compose]]:
@@ -51,7 +51,7 @@ TODO: Rename branch when finished
 * Docker services
 :PROPERTIES:
 :ID:       EE9DC662-28B7-4259-A49A-6ACB7C533D3C
-:CUSTOM_ID: sec:docker-services
+:CUSTOM_ID: docker-services
 :END:
 
 The [[file:docker-compose.yml][docker-compose.yml]] file configures and starts the following Docker containers.
@@ -147,7 +147,7 @@ The coordinator and the worker also mount the folder =resources/config/nebulastr
 
 * Configuring NebulaStream
 :PROPERTIES:
-:CUSTOM_ID: sec:configuration
+:CUSTOM_ID: configuration
 :END:
 
 A minimal NebulaStream configuration must configure network options, as well as logical and physical sources.
@@ -337,7 +337,7 @@ In our setup, we show the following cases:
 
 * Visualizing the input data
 :PROPERTIES:
-:CUSTOM_ID: sec:visualization
+:CUSTOM_ID: visualization
 :END:
 
 With Docker containers running, we can already show the generated input data in Grafana:
@@ -370,7 +370,7 @@ We can submit queries to NebulaStream using the web UI, which we describe next.
 
 * The NebulaStream web UI
 :PROPERTIES:
-:CUSTOM_ID: sec:web-ui
+:CUSTOM_ID: web-ui
 :END:
 
 The NebulaStream web UI can be accessed at [[http://localhost:9000][http://localhost:9000]]. It provides the following functionality:
@@ -423,7 +423,7 @@ You can verify the connection by clicking on "Save changes", after which a messa
 
 * Running NebulaStream queries
 :PROPERTIES:
-:CUSTOM_ID: sec:running-nebulastream-queries
+:CUSTOM_ID: running-nebulastream-queries
 :END:
 
 NebulaStream supports queries with the following operators:
@@ -721,7 +721,7 @@ The result of the query is visualized in the Grafana panel =Q9: Join=. Note that
 
 * Actuating events in the 3D smart city
 :PROPERTIES:
-:CUSTOM_ID: sec:actuating-events
+:CUSTOM_ID: actuating-events
 :END:
 
 We now have everything we need to construct an end-to-end query pipeline, which takes the data generated form the smart city, performs a computation on it with NebulaStream, and produces an output stream, which triggers an event in the smart city.
@@ -781,7 +781,7 @@ It is also possible to reduce the rendering speed of the 3D visualization.
 
 * The Java client
 :PROPERTIES:
-:CUSTOM_ID: sec:the-java-client
+:CUSTOM_ID: the-java-client
 :END:
 
 So far, we have used the web UI to interact with NebulaStream.
