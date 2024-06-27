@@ -143,7 +143,7 @@ volumes:
 
 A number of Docker services, e.g., the coordinator, the data generator, the UI, Mosquitto, and Grafana, expose ports, so that we can interact with them on the host system.
 
-The coordinator and the worker also mount the folder =resources/config/nebulastream=, so that we can provide configuration files to the container.
+The coordinator and the worker also mount the folder =config/nebulastream=, so that we can provide configuration files to the container.
 
 * Configuring NebulaStream
 :PROPERTIES:
@@ -864,13 +864,13 @@ Instead, we use a fluid syntax to chain operators.
 For example, query Q1 contains the following expression:
 
 #+begin_src c++
-Attribute("producedPower") < 10000
+Attribute("producedPower") <= 400
 #+end_src
 
 In the Java client, we formulate this expression as follows:
 
 #+begin_src java
-attribute("producedPower").lessThan(1000)
+attribute("producedPower").lessThanOrEqual(400)
 #+end_src
 
 In general, an operation =LHS op RHS= in C++ syntax is converted to =LHS.opMethod(RHS)= in Java syntax.
@@ -923,7 +923,7 @@ Query difference = joined.map("DifferenceProducedConsumedPower",
 
 ** Query examples
 
-The repository contains Java versions of the previous [[#example-queries][Example queries]] in the folder =java-client-example=.
+The repository contains Java versions of the previous [[#example-queries][example queries]] in the folder =java-client-example=.
 These can be run individually from an IDE or all queries at once, using =./gradlew run=.
 Query Q1 stops after running for 10 seconds to demonstrate the runtime API of the =NebulaStreamRuntime= object.
 The other queries have to be stopped manually.
