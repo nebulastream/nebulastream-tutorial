@@ -379,7 +379,9 @@ Further information: [[https://docs.nebula.stream/docs/clients/rest-api/#topolog
 The source catalog shows information about the logical sources known to the coordinator, i.e., the schema and the connected physical sources.
 We can also see on which node a physical source resides.
 
-TODO Animation: waiting for fix to show schema with TEXT fields
+#+CAPTION: Registered logical sources with their schema and associated physical sources.
+#+ATTR_HTML: :width 800
+[[file:doc/show-sources-information.gif]]
 
 ** The settings screen
 
