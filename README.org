@@ -2,9 +2,24 @@
 
 The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to NebulaStream, and visualize their results.
 
-TODO table of contents?
+Table of contents:
 
-* IoTropolis -- The NebulaStream smart city
+- [[#sec:smart-city-example][Running example: The NebulaStream smart city]]
+- [[#sec:installation-and-execution][Installation and execution]]
+- [[#sec:docker-services][Docker services]]
+- [[#sec:configuration][Configuring NebulaStream]]
+- [[#sec:visualization][Visualizing the input data]]
+- [[#sec:web-ui][The NebulaStream web UI]]
+- [[#sec:running-nebulastream-queries][Running NebulaStream queries]]
+- [[#example-queries][Example queries]]
+- [[#sec:actuating-events][Actuating events in the 3D smart city]]
+- [[#sec:the-java-client][The Java client]]
+- [[*Query merging][Query merging]]
+
+* Running example: The NebulaStream smart city
+:PROPERTIES:
+:CUSTOM_ID: sec:smart-city-example
+:END:
 
 The tutorial is based on a smart city scenario, the NebulaStream IoTropolis.
 In this smart city, wind turbines and solar panels /produce/ energy, whereas households, offices, factories, and street lights /consume/ energy.
@@ -15,6 +30,9 @@ For example, in this tutorial, street lights are turned off at night when the wi
 NebulaStream is used to gather measurements from energy producers and consumers, aggregate it, compute the difference between produced and consumed energy, and send out a signal that triggers a change of street light usage.
 
 * Installation and execution
+:PROPERTIES:
+:CUSTOM_ID: sec:installation-and-execution
+:END:
 
 The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compose]]:
 
@@ -33,6 +51,7 @@ TODO: Rename branch when finished
 * Docker services
 :PROPERTIES:
 :ID:       EE9DC662-28B7-4259-A49A-6ACB7C533D3C
+:CUSTOM_ID: sec:docker-services
 :END:
 
 The [[file:docker-compose.yml][docker-compose.yml]] file configures and starts the following Docker containers.
@@ -127,6 +146,9 @@ A number of Docker services, e.g., the coordinator, the data generator, the UI, 
 The coordinator and the worker also mount the folder =resources/config/nebulastream=, so that we can provide configuration files to the container.
 
 * Configuring NebulaStream
+:PROPERTIES:
+:CUSTOM_ID: sec:configuration
+:END:
 
 A minimal NebulaStream configuration must configure network options, as well as logical and physical sources.
 Logical sources specify the data schema and are part of the coordinator configuration.
@@ -314,6 +336,9 @@ In our setup, we show the following cases:
 [[file:doc/topology-of-logical-and-physical-sources.png]]
 
 * Visualizing the input data
+:PROPERTIES:
+:CUSTOM_ID: sec:visualization
+:END:
 
 With Docker containers running, we can already show the generated input data in Grafana:
 
@@ -344,6 +369,9 @@ Of course, the purpose of NebulaStream is to execute streaming queries.
 We can submit queries to NebulaStream using the web UI, which we describe next.
 
 * The NebulaStream web UI
+:PROPERTIES:
+:CUSTOM_ID: sec:web-ui
+:END:
 
 The NebulaStream web UI can be accessed at [[http://localhost:9000][http://localhost:9000]]. It provides the following functionality:
 
@@ -692,6 +720,9 @@ The result of the query is visualized in the Grafana panel =Q9: Join=. Note that
 [[file:doc/q9-join-visualization.png]]
 
 * Actuating events in the 3D smart city
+:PROPERTIES:
+:CUSTOM_ID: sec:actuating-events
+:END:
 
 We now have everything we need to construct an end-to-end query pipeline, which takes the data generated form the smart city, performs a computation on it with NebulaStream, and produces an output stream, which triggers an event in the smart city.
 
@@ -749,6 +780,9 @@ With wind speed 4, a number of street lights are turned of during the night.
 It is also possible to reduce the rendering speed of the 3D visualization.
 
 * The Java client
+:PROPERTIES:
+:CUSTOM_ID: sec:the-java-client
+:END:
 
 So far, we have used the web UI to interact with NebulaStream.
 In the background, the web UI communicates with the NebulaStream coordinator using a REST API.
