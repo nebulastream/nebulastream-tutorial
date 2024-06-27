@@ -2,7 +2,7 @@
 
 The NebulaStream tutorial demonstrates how to download and configure NebulaStream, how to submit queries to NebulaStream, and visualize their results.
 
-Table of contents:
+** Table of contents
 
 - [[#smart-city-example][Running example: The NebulaStream smart city]]
 - [[#installation-and-execution][Installation and execution]]
