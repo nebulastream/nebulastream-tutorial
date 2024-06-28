@@ -1,5 +1,6 @@
 plugins {
-    id 'java'
+    id "application"
+    id "java"
 }
 
 group 'stream.nebula'
@@ -10,8 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'stream.nebula:nebulastream-java-client:0.0.74'
+    implementation 'stream.nebula:nebulastream-java-client:0.0.92'
 }
 
-apply plugin:'application'
-mainClassName = 'stream.nebula.example.NebulaStreamTutorial'
+mainClassName = 'stream.nebula.example.RunAllQueries'

@@ -1,4 +1,0 @@
-{
-  "userQuery": "Query::from(\"wind_turbines\").window(TumblingWindow::of(EventTime(Attribute(\"features_properties_updated\")), Minutes(10))).byKey(Attribute(\"features_properties_capacity\")).apply(Sum(Attribute(\"features_properties_mag\"))).sink(MQTTSinkDescriptor::create(\"ws://172.31.0.11:9001\", \"/nesui\", \"rfRqLGZRChg8eS30PEeR\", 5, MQTTSinkDescriptor::TimeUnits::milliseconds, 500, MQTTSinkDescriptor::ServiceQualities::atLeastOnce, false));",
-  "placement": "BottomUp"
-}

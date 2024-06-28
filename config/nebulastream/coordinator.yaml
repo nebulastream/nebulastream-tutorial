@@ -1,0 +1,78 @@
+# Logging configuration. Valid options are: LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG, LOG_TRACE
+logLevel: LOG_ERROR
+
+# Hostname of the coordinator. Passed to the internal worker, so it can connect over the local network.
+# Corresponds to the service name in docker-compose.yml.
+coordinatorHost: coordinator
+
+# Hostname under which the internal worker registers with the coordinator.
+# Corresponds to the service name in docker-compose.yml.
+worker:
+  localWorkerHost: coordinator
+
+# IP address of the coordinator REST API. 0.0.0.0 is reachable from outside the Docker container.
+restIp: 0.0.0.0
+
+# Configure logical sources.
+# - logicalSourceName: Each logical source is identified by a unique name.
+# - fields: A source has a schema, an unordered list of named and typed attributes.
+# Valid types are:
+# - INT8, INT16, INT32, INT64
+# - UINT8, UINT16, UINT32, UINT64
+# - FLOAT32, FLOAT64
+# - BOOLEAN
+# - TEXT
+logicalSources:
+  # windTurbines and solarPanels have the same schema
+  - logicalSourceName: windTurbines
+    fields:
+      # Each wind turbine is uniquely identified.
+      - name: producerId
+        type: INT8
+      # Multiple wind turbines are grouped together.
+      # The panels in the 3D UI show power usage per group.
+      - name: groupId
+        type: INT8
+      # The power currently produced by a wind turbine in kWh.
+      - name: producedPower
+        type: INT32
+      # The timestamp of the message.
+      # Timestamps have to be UINT64 fields.
+      - name: timestamp
+        type: UINT64
+  # windTurbines and solarPanels have the same schema.
+  - logicalSourceName: solarPanels
+    fields:
+      - name: producerId
+        type: INT8
+      - name: groupId
+        type: INT8
+      - name: producedPower
+        type: INT32
+      - name: timestamp
+        type: UINT64
+  - logicalSourceName: consumers
+    fields:
+      # Each consumer is uniquely identified.
+      - name: consumerId
+        type: INT8
+      - name: sectorId
+        type: INT8
+      # The power currently consumed in kWh.
+      - name: consumedPower
+        type: INT32
+      # The type of consumer: values are households, offices, factories, streetlights.
+      - name: consumerType
+        type: TEXT
+      # The timestamp of the message.
+      - name: timestamp
+        type: UINT64
+
+# Enable merging of operators from multiple queries in the global query plan.
+# - DefaultQueryMergerRule: No query merging
+# - HashSignatureBasedPartialQueryMergerRule: Syntactic query merging
+# - Z3SignatureBasedCompleteQueryMergerRule: Semantic query merging
+optimizer:
+  queryMergerRule: "DefaultQueryMergerRule"
+
+

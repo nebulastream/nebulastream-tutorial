@@ -1,0 +1,35 @@
+# Logging configuration. Valid options are: LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG, LOG_TRACE
+logLevel: LOG_ERROR
+
+# Hostname of the coordinator, to which the worker should register upon startup.
+# Corresponds to the service name in docker-compose.yml.
+coordinatorHost: coordinator
+
+# Hostname under which this worker registers with the coordinator. Corresponds to the service name in docker-compose.yml.
+localWorkerHost: consumers-worker-2
+
+# Physical source configuration
+physicalSources:
+  # Configure the households physical source as part of the consumers logical source.
+  - logicalSourceName: consumers
+    physicalSourceName: households
+    type: MQTT_SOURCE
+    configuration:
+      url: ws://mosquitto:9001
+      topic: households
+  # Configure the offices physical source as part of the consumers logical source.
+  - logicalSourceName: consumers
+    physicalSourceName: offices
+    type: MQTT_SOURCE
+    configuration:
+      url: ws://mosquitto:9001
+      topic: offices
+  # Configure the factories physical source as part of the consumers logical source.
+  - logicalSourceName: consumers
+    physicalSourceName: factories
+    type: MQTT_SOURCE
+    configuration:
+      url: ws://mosquitto:9001
+      topic: factories
+
+workerId: 4
