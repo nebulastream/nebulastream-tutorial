@@ -121,7 +121,7 @@ mosquitto:
     - 9001:9001
     - 9002:9002
   volumes:
-    - ./mosquitto/config:/mosquitto/config
+    - ./config/mosquitto:/mosquitto/config
 #+end_src
 
 - *grafana*: The tutorial also uses [[https://grafana.com/][Grafana]] to visualize input data and query results.
@@ -159,7 +159,7 @@ Physical sources specify how data is obtained and are part of the worker configu
 :CUSTOM_ID: coordinator-configuration
 :END:
 
-The NebulaStream coordinator is configured through the file [[file:coordinator.yaml]] which is mounted in the Docker container in the folder =tutorial= and passed to the =--configPath= command option:
+The NebulaStream coordinator is configured through the file [[file:config/nebulastream/coordinator.yaml]] which is mounted in the Docker container in the folder =/config= and passed to the =--configPath= command option:
 
 #+begin_src sh
 nesCoordinator --configPath=/config/coordinator.yaml
