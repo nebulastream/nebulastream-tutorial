@@ -10,18 +10,21 @@ localWorkerHost: consumers-worker-2
 
 # Physical source configuration
 physicalSources:
+  # Configure the households physical source as part of the consumers logical source.
   - logicalSourceName: consumers
     physicalSourceName: households
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: households
+  # Configure the offices physical source as part of the consumers logical source.
   - logicalSourceName: consumers
     physicalSourceName: offices
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: offices
+  # Configure the factories physical source as part of the consumers logical source.
   - logicalSourceName: consumers
     physicalSourceName: factories
     type: MQTT_SOURCE

@@ -10,6 +10,7 @@ localWorkerHost: consumers-worker-1
 
 # Physical source configuration
 physicalSources:
+  # Configure the streetLights physical source as part of the consumers logical source.
   - logicalSourceName: consumers
     physicalSourceName: streetLights
     type: MQTT_SOURCE

@@ -10,12 +10,14 @@ localWorkerHost: producers-worker
 
 # Physical source configuration
 physicalSources:
+  # Configure the solarPanels physical source as part of the solarPanels logical source.
   - logicalSourceName: solarPanels
     physicalSourceName: solarPanels
     type: MQTT_SOURCE
     configuration:
       url: ws://mosquitto:9001
       topic: solarPanels
+  # Configure the windTurbines physical source as part of the windTurbines logical source.
   - logicalSourceName: windTurbines
     physicalSourceName: windTurbines
     type: MQTT_SOURCE
