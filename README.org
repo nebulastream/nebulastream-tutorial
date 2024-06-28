@@ -930,7 +930,122 @@ The other queries have to be stopped manually.
 
 ** Java UDFs
 
-TODO Java UDFs
+When we execute NebulaStream queries from the Java client, we can also use Java UDFs to transform data.
+NebulaStream supports to UDF-based operators: =map= and =flatMap=.
+UDFs can contain arbitrary Java code, and the code dependencies of the UDF are automatically transferred from the Java client to the workers, including third-party libraries.
+The UDF method signature depends on the schema of the input tuples and determines the schema of the output tuples.
+
+*** Map UDFs
+
+The Map Java UDF operator applies a stateless UDF to each input tuple and produces exactly one output tuple.
+Because it is stateless, it can be pushed down to data sources to reduce the amount of transferred data.
+A Map UDF implements the =MapFunction= interface, where =IN= and =OUT= are class parameters representing the input and output schema, respectively.
+
+#+begin_src java
+class MyMapFunction implements MapFunction<IN, OUT> {
+    public OUT map(final IN consumersInput) {
+        OUT out = new OUT();
+        // ...
+        return out;
+    }
+}
+#+end_src
+
+The UDF can then be used in queries as follows:
+
+#+begin_src java
+Query query = nebulaStreamRuntime.readFromSource("...")
+    .map(new MyMapFunction());
+#+end_src
+
+*** FlatMap UDFs
+
+The FlatMap Java UDF operator applies a stateful UDF to each input tuple and produces a collection of zero or more results.
+Any instance variable of the UDF class will retain its state accross multiple invocations of the UDF on different tuples.
+The operator therefore enables us to express an arbitrary computation over multiple tuples.
+A FlatMap UDF implements the =FlatMapFunction= interface, where =IN= and =OUT= are class parameters representing the input and output schema, respectively.
+
+#+begin_src java
+class MyFlatMapFunction implements FlatMapFunction<IN, OUT> {
+    private Map state = new HashMap(); // Can be any instance variable
+
+    public Collection<OUT> map(final IN consumersInput) {
+        List<OUT> out = new ArrayList<>();
+        out.append(new OUT());
+        // ...
+        return out;
+    }
+}
+#+end_src
+
+The UDF can then be used in queries as follows:
+
+#+begin_src java
+Query query = nebulaStreamRuntime.readFromSource("...")
+    .flatMap(new MyFlatMapFunction());
+#+end_src
+
+*** Input type mapping
+
+The input type of the UDF must match the schema of the input tuples.
+Concretely, we have to match the bit length of the attributes, i.e., an =INT8= attribute is mapped to the Java type =byte=, an =INT16= attribute is mapped to a =short= field, and so on.
+Because Java types are signed, we also have to use signed types, e.g., =INT8= instead of =UINT8=
+The only exception to this rule are =UINT64= attribures, which can represent timestamps, and are mapped to the Java type =long=.
+
+For example, the =consumers= logical source is defined as follows:
+
+#+begin_src yaml
+- logicalSourceName: consumers
+  fields:
+    - name: consumerId
+      type: INT8
+    - name: sectorId
+      type: INT8
+    - name: consumedPower
+      type: INT32
+    - name: consumerType
+      type: TEXT
+    - name: timestamp
+      type: UINT64
+#+end_src
+
+It is mapped to the following Java class (the order of the fields does not matter):
+
+#+begin_src java
+class ConsumersInput {
+    byte consumerId;
+    byte sectorId;
+    int consumedPower;
+    String consumerType;
+    long timestamp;
+}
+#+end_src
+
+*** UDF example
+
+The class =JavaUdfExampleQuery= converts a =UINT64= timestamp attribute to a human-readable form and extends the input tuples with it.
+Because the schema of the output stream is determined by the output type of the UDF, we also have to copy the input values.
+
+#+begin_src java
+class ConvertTimestampToDateTime implements MapFunction<ConsumersInput, Output> {
+
+    @Override
+    public Output map(final ConsumersInput consumersInput) {
+        // Copy fields of the input stream into the output
+        Output output = new Output();
+        output.consumerId = consumersInput.consumerId;
+        output.sectorId = consumersInput.sectorId;
+        output.consumedPower = consumersInput.consumedPower;
+        output.consumerType = consumersInput.consumerType;
+        output.timestamp = consumersInput.timestamp;
+        // Convert the UINT64 input timestamp into a human-readable form
+        Date date = new Date(consumersInput.timestamp);
+        output.datetime = date.toString();
+        // Return the output object
+        return output;
+    }
+}
+#+end_src
 
 * Query merging
 :PROPERTIES:
