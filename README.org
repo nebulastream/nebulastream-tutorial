@@ -39,7 +39,6 @@ The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compo
 #+begin_src sh
 git clone https://github.com/nebulastream/nebulastream-tutorial
 cd nebulastream-tutorial
-git checkout debs-2024-tutorial
 docker compose pull
 docker compose up --build
 #+end_src
