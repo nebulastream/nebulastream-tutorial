@@ -39,7 +39,6 @@ The tutorial is installed using [[https://docs.docker.com/compose/][Docker Compo
 #+begin_src sh
 git clone https://github.com/nebulastream/nebulastream-tutorial
 cd nebulastream-tutorial
-git checkout debs-2024-tutorial
 docker compose pull
 docker compose up --build
 #+end_src
@@ -354,16 +353,6 @@ With Docker containers running, we can already show the generated input data in 
    #+CAPTION: Initial Grafana dashboards.
    #+ATTR_HTML: :width 800
    [[file:doc/initial-grafana-dashboard.png]]
-
-   *Note:* When Grafana is started for the first time, the MQTT datasource is not yet configured.
-   This is indicated by the error triangles on red background in the dashboard.
-   In the hamburger menu in the top-left corner, select =Connections > Data sources=, click on the =NES_datatown= data source, and enter =ws://mosquitto:9001= in the URI field.
-   Then go to Home; the dashboard should now show data.
-   The Docker container should persist the configured datasource between restart.
-
-   #+CAPTION: Configure missing MQTT data source URI in Grafana.
-   #+ATTR_HTML: :width 800
-   [[file:doc/configure-data-sources.gif]]
 
 Of course, the purpose of NebulaStream is to execute streaming queries.
 We can submit queries to NebulaStream using the web UI, which we describe next.

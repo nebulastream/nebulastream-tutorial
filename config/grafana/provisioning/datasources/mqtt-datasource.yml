@@ -13,10 +13,9 @@ apiVersion: 1
 datasources:
   - name: 'NES_datatown'
     type: 'grafana-mqtt-datasource'
-    # The field should be named URI, but it is not picked up.
-    uri: 'ws://mosquitto:9001'
-    # The URL field is shown in the datasources overview window.
-    url: 'ws://mosquitto:9001'
     isDefault: true
     editable: true
     version: 1
+    "jsonData": {
+      "uri": "ws://mosquitto:9001"
+    }
