@@ -2,6 +2,8 @@ services:
 
   nes:
     image: nebulastream/worker:main
+    volumes:
+      - ./output:/output
 
   datagen:
     build:
@@ -12,4 +14,4 @@ services:
       context: docker/nebuli
       dockerfile: Dockerfile.nebuli
     volumes:
-      - ./queries:./queries
+      - ./queries:/queries

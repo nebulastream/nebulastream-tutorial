@@ -5,7 +5,7 @@ sink:
   type: File
   config:
     inputFormat: CSV
-    filePath: "/home/ttekdogan/.cache/ccache/test.csv"
+    filePath: "/output/test.csv"
     append: false
 logical:
   - name: tcp_source

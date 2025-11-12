@@ -1,5 +1,3 @@
 FROM nebulastream/nebuli:latest
 
-#COPY ../queries/* /queries
-
-ADD nes-nebuli register -s localhost:8080 -i queries/s2s.yaml
+CMD nes-nebuli register -s localhost:8080 -i queries/s2s.yaml
