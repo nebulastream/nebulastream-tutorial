@@ -4,14 +4,34 @@ services:
     image: nebulastream/worker:main
     volumes:
       - ./output:/output
+    networks:
+      bench:
 
   datagen:
     build:
       context: docker/datagen
+    networks:
+      bench:
+        aliases:
+          - datagen
 
   nebuli:
-    build:
-      context: docker/nebuli
-      dockerfile: Dockerfile.nebuli
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+      - datagen
     volumes:
       - ./queries:/queries
+    command: ["register", "-s", "nes:8080", "-x", "-i", "queries/s2s.yaml"]
+    networks:
+      bench:
+
+  probe:
+    image: alpine:3.20
+    command: ["sh", "-lc", "sleep 3600"]
+    networks:
+      bench:
+
+networks:
+  bench:
+    driver: bridge
