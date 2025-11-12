@@ -1,0 +1,15 @@
+services:
+
+  nes:
+    image: nebulastream/worker:main
+
+  datagen:
+    build:
+      context: docker/datagen
+
+  nebuli:
+    build:
+      context: docker/nebuli
+      dockerfile: Dockerfile.nebuli
+    volumes:
+      - ./queries:./queries

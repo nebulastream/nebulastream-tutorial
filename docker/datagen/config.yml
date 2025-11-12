@@ -1,0 +1,5 @@
+ecg:
+  broker: 0.0.0.0
+  port: 5002
+  topic: source/live/patient_monitor_ecg
+  period: 10 # milliseconds between publishes
