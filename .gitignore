@@ -3,3 +3,4 @@
 /java-query-results.csv
 /.idea/
 /.z3-trace
+/output/*

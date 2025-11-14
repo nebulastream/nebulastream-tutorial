@@ -5,6 +5,8 @@ services:
     volumes:
       - ./output:/output
     command: ["--grpc=nes:8080"]
+    ports:
+      - 8080:8080
 
   datagen:
     build:
