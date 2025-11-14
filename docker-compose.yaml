@@ -11,6 +11,7 @@ services:
       context: docker/datagen
     ports:
       - 5002:5002
+    command: ["bash", "-c", "python3 datagen.py"]
 
   nebuli:
     image: nebulastream/nebuli:main

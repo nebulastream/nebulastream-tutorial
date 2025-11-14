@@ -65,7 +65,7 @@ def main() -> None:
                     timestamp = int(
                         datetime.now(timezone.utc).timestamp() * 1_000
                     )
-                    csv_row = f"{timestamp},{data[index]}"
+                    csv_row = f"{timestamp},{data[index]}\n"
                     conn.sendall(csv_row.encode("utf-8"))
                     index = (index + 1) % len(data)
                     time.sleep(PUBLISH_PERIOD / 1000.0)

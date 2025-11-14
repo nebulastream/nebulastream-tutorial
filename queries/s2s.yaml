@@ -19,7 +19,7 @@ physical:
     type: TCP
     parser_config:
       type: CSV
-      tupleDelimiter: "|"
+      tupleDelimiter: "\n"
       fieldDelimiter: ","
     source_config:
       socket_host: datagen

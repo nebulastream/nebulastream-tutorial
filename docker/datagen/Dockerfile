@@ -19,4 +19,4 @@ RUN pip install --no-cache-dir --upgrade pip \
 
  COPY datagen.py config.yml ./
 
- CMD ["sh", "-c", "python datagen.py"]
+ #CMD ["sh", "-c", "python datagen.py"]
