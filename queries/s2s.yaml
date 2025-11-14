@@ -1,5 +1,9 @@
+#CREATE LOGICAL SOURCE tcp_source(ts UINT64, id FLOAT64);
+
+#CREATE PHYSICAL SOURCE FOR tcp_source TYPE TCP;
+
 query: |
-  SELECT * FROM tcp_source INTO File('CSV' AS `SINK`.INPUT_FORMAT, "/output/test.csv" AS `SINK`.FILE_PATH)
+  SELECT * FROM `tcp_source` INTO File('CSV' AS `SINK`.INPUT_FORMAT, "/output/test.csv" AS `SINK`.FILE_PATH)
 
 sinks: []
 
