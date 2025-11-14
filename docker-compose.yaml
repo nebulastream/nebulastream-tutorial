@@ -4,8 +4,7 @@ services:
     image: nebulastream/worker:main
     volumes:
       - ./output:/output
-    ports:
-      - 8080:8080
+    command: ["--grpc=nes:8080"]
 
   datagen:
     build:
