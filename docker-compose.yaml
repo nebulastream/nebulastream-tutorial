@@ -22,4 +22,4 @@ services:
       - datagen
     volumes:
       - ./queries:/queries
-    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/s2s.yaml"]
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query_sin.yaml"]
