@@ -28,6 +28,21 @@ docker compose up
     - Query 1: source to sink, fixed pattern
     - Query 2: basic filtering, sinus pattern
 
+#### Docker Command to Run Single Node NebulaStream Worker
+```
+docker run -d --name nes --network nes-net-tutorial -p 8080:8080 -v $(pwd)/output:/output nebulastream/worker:main --grpc=nes:8080
+```
+
+#### Docker Command to Register Query 1
+```
+docker run --rm --network nes-net-tutorial -v "$(pwd)/queries:/queries" nebulastream/nebuli:main -s nes:8080 register -x -i queries/source_generator_query.yaml
+```
+
+#### Docker Command to Register Query 2
+```
+docker run --rm --network nes-net-tutorial -v "$(pwd)/queries:/queries" nebulastream/nebuli:main -s nes:8080 register -x -i queries/source_generator_query.yaml
+```
+
 ## Level 1 (End-user)
 - At this level, we use different components (such as datagen) and show NebulaStream's interaction with these components.
 - We use docker compose for orchestrating the whole setup.
