@@ -8,16 +8,19 @@ The tutorial is based on the [NEEDMI Demo](https://youtu.be/g1eKSqm5biU?si=iaAuk
 
 Prerequisites
 
+- `git`, you can follow this [installation guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+- `docker`, make sure `compose` is available in your installation
+
 Clone this repository
 
 ```bash
 git clone https://github.com/nebulastream/nebulastream-tutorial.git
 ```
 
-Run the Docker Compose
+Get the Docker Images
 
 ```bash
-docker compose up
+docker compose pull
 ```
 
 ## Level 0 (Basics)
@@ -26,7 +29,9 @@ docker compose up
 - We use `generator source` for the generation of data, and sink results to a `CSV` file.
 - We show the following queries and generator source patterns:
     - Query 1: source to sink, fixed pattern
+    - Stop Query 1
     - Query 2: basic filtering, sinus pattern
+    - Stop Query 2
 
 ```mermaid
 flowchart LR
