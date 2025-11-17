@@ -65,6 +65,31 @@ docker run --rm --network nes-net-tutorial -v "$(pwd)/queries:/queries" nebulast
 - We showcase a meaningful use case (probably NEEDMI).
 - We can visualize live results (either with NES UI or Grafana) for better comprehension.
 
+```mermaid
+flowchart LR
+    A[/NebuLi/] --> |Register<br>Query| B_top
+
+    subgraph B [NebulaStream Worker]
+        direction LR
+        B_top["Query Compiler<br>& Optimizer"]
+        B_top --> |Query<br>Plan| B_right
+        B_left["Input Formatter<br>& Parser"] e2@==>
+         |Input<br>Data| B_right[Execution<br>Engine]
+    end
+
+    B_right e1@--> |Output<br>Data| C@{ shape: lean-l, label: "CSV File" }
+
+    D[Data<br>Generator] e3@--> |"Signal Data"| B_left
+    D[Data<br>Generator] e4@--> |"Camera Data"| B_left
+
+    e1@{animation: fast}
+    e2@{animation: fast}
+    e3@{animation: slow}
+    e4@{animation: fast}
+
+    style B fill:#ccf,stroke:#333,stroke-width:1px
+```
+
 ## Level 2 (Developer)
 - At this level, we go through implementing a new source in NebulaStream.
 - We need to start by explaining the structure of codebase (all packages briefly, and the ones that we touch in detail).
