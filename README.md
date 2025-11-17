@@ -30,10 +30,13 @@ docker compose up
 
 ```mermaid
 flowchart LR
-    A[/NebuLi/] --> |Register<br>Query| B
+flowchart LR
+    A[/NebuLi/] --> |Register<br>Query| B_top
 
     subgraph B [NebulaStream Worker]
         direction LR
+        B_top["Query Compiler<br>& Optimizer"]
+        B_top --> |Query<br>Plan| B_right
         B_left[Generator<br>Source] e2@-->
          |Input<br>Data| B_right[Execution<br>Engine]
     end
@@ -42,6 +45,8 @@ flowchart LR
 
     e1@{animation: fast}
     e2@{animation: fast}
+
+    style B fill:#ccf,stroke:#333,stroke-width:1px
 ```
 
 #### Docker Command to Run Single Node NebulaStream Worker
