@@ -28,6 +28,22 @@ docker compose up
     - Query 1: source to sink, fixed pattern
     - Query 2: basic filtering, sinus pattern
 
+```mermaid
+flowchart LR
+    A[/NebuLi/] --> |Register<br>Query| B
+
+    subgraph B [NebulaStream Worker]
+        direction LR
+        B_left[Generator<br>Source] e2@-->
+         |Input<br>Data| B_right[Execution<br>Engine]
+    end
+
+    B_right e1@--> |Output<br>Data| C@{ shape: lean-l, label: "CSV File" }
+
+    e1@{animation: fast}
+    e2@{animation: fast}
+```
+
 #### Docker Command to Run Single Node NebulaStream Worker
 ```
 docker run -d --name nes --network nes-net-tutorial -p 8080:8080 -v $(pwd)/output:/output nebulastream/worker:main --grpc=nes:8080
