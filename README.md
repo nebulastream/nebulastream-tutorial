@@ -30,7 +30,6 @@ docker compose up
 
 ```mermaid
 flowchart LR
-flowchart LR
     A[/NebuLi/] --> |Register<br>Query| B_top
 
     subgraph B [NebulaStream Worker]
