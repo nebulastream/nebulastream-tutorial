@@ -15,11 +15,32 @@ services:
       - 5002:5002
     command: ["bash", "-c", "python3 datagen.py"]
 
+  nebuli-start-source-generator:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query.yaml"]
+  
+  nebuli-start-source-generator-sin:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query_sin.yaml"]
+
+  nebuli-start-ecg-query:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source2sink_ecg.yaml"]
+
   nebuli:
     image: nebulastream/nebuli:main
     depends_on:
       - nes
-      - datagen
-    volumes:
-      - ./queries:/queries
-    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query_sin.yaml"]
+    entrypoint: ["bash", "-c"]

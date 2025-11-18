@@ -54,18 +54,43 @@ flowchart LR
 ```
 
 #### Docker Command to Run Single Node NebulaStream Worker
-```
-docker run -d --name nes --network nes-net-tutorial -p 8080:8080 -v $(pwd)/output:/output nebulastream/worker:main --grpc=nes:8080
+
+We recommend to run this in a terminal to see the output and the following steps in a different terminal.
+
+```bash
+docker compose up nes
 ```
 
-#### Docker Command to Register Query 1
-```
-docker run --rm --network nes-net-tutorial -v "$(pwd)/queries:/queries" nebulastream/nebuli:main -s nes:8080 register -x -i queries/source_generator_query.yaml
+#### Docker Command to Submit the Source Generator Query
+```bash
+docker compose up nebuli-start-source-generator
 ```
 
-#### Docker Command to Register Query 2
+#### Docker Command to Submit the Sin Wave Source Generator Query
+```bash
+docker compose up nebuli-start-source-generator-sin
 ```
-docker run --rm --network nes-net-tutorial -v "$(pwd)/queries:/queries" nebulastream/nebuli:main -s nes:8080 register -x -i queries/source_generator_query.yaml
+
+The output will be similar to this:
+
+```bash
+[+] Running 2/2
+ ✔ Container nebulastream-tutorial-nes-1                                Running0.0s 
+ ✔ Container nebulastream-tutorial-nebuli-start-source-generator-sin-1  Created0.0s 
+Attaching to nebuli-start-source-generator-sin-1
+nebuli-start-source-generator-sin-1  | 3
+nebuli-start-source-generator-sin-1 exited with code 0
+```
+
+Your will need the Query ID for the next step, this is the number indicated in this line:
+
+```bash
+nebuli-start-source-generator-sin-1  | 3  <---- This number is the Query ID
+```
+
+#### Docker Command to Stop the Sin Wave Source Generator Query
+```bash
+docker compose run --remove-orphans nebuli "nes-nebuli -s nes:8080 stop 3"
 ```
 
 ## Level 1 (End-user)
