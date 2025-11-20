@@ -44,3 +44,11 @@ services:
     depends_on:
       - nes
     entrypoint: ["bash", "-c"]
+  
+  sink-visualizer:
+    image: alpine:latest
+    depends_on:
+      - nes
+    volumes:
+      - ./output:/output
+    entrypoint: ["sh", "-c", "tail -F /output/sink.csv"]
