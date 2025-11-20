@@ -1,0 +1,3 @@
+FROM nebulastream/nebuli:main
+
+CMD nes-nebuli register -X -s nes:8080 -i queries/s2s.yaml

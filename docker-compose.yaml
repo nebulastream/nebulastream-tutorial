@@ -1,0 +1,54 @@
+services:
+
+  nes:
+    image: nebulastream/worker:main
+    volumes:
+      - ./output:/output
+    command: ["--grpc=nes:8080"]
+    ports:
+      - 8080:8080
+
+  datagen:
+    build:
+      context: docker/datagen
+    ports:
+      - 5002:5002
+    command: ["bash", "-c", "python3 datagen.py"]
+
+  nebuli-start-source-generator:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query.yaml"]
+  
+  nebuli-start-source-generator-sin:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source_generator_query_sin.yaml"]
+
+  nebuli-start-ecg-query:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    volumes:
+      - ./queries:/queries
+    entrypoint: ["bash", "-c", "sleep 5 && nes-nebuli -s nes:8080 register -x -i queries/source2sink_ecg.yaml"]
+
+  nebuli:
+    image: nebulastream/nebuli:main
+    depends_on:
+      - nes
+    entrypoint: ["bash", "-c"]
+  
+  sink-visualizer:
+    image: alpine:latest
+    depends_on:
+      - nes
+    volumes:
+      - ./output:/output
+    entrypoint: ["sh", "-c", "tail -F /output/sink.csv"]

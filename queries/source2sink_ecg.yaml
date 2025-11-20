@@ -1,0 +1,26 @@
+#CREATE LOGICAL SOURCE tcp_source(ts UINT64, id FLOAT64);
+
+#CREATE PHYSICAL SOURCE FOR tcp_source TYPE TCP;
+
+query: |
+  SELECT * FROM `tcp_source` INTO File('CSV' AS `SINK`.INPUT_FORMAT, "/output/sink.csv" AS `SINK`.FILE_PATH)
+
+sinks: []
+
+logical:
+  - name: tcp_source
+    schema:
+      - name: ts
+        type: UINT64
+      - name: id
+        type: FLOAT64
+physical:
+  - logical: tcp_source
+    type: TCP
+    parser_config:
+      type: CSV
+      tupleDelimiter: "\n"
+      fieldDelimiter: ","
+    source_config:
+      socket_host: datagen
+      socket_port: 5002
